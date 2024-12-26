@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1071549051917",
+    "project_id": "skibidi-3def3",
+    "storage_bucket": "skibidi-3def3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071549051917:android:7e5a9fefd90b254ba19144",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNnTlFEuEDUj-_LzLHb1_W_H9tQmYsiTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
