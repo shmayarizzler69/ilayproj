@@ -1,4 +1,4 @@
-package com.example.myapplication.model;
+package com.example.myapplication.models;
 
 public class User {
     String id;
@@ -62,7 +62,7 @@ public class User {
         this.password = password;
     }
 
-    public String getId() {
+    public String getUId() {
         return id;
     }
 
