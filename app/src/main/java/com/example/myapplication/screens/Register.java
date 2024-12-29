@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.screens;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,14 +16,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.myapplication.R;
 import com.example.myapplication.models.User;
+import com.example.myapplication.services.AuthenticationService;
+import com.example.myapplication.services.DatabaseService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 public class Register extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -35,8 +36,8 @@ public class Register extends AppCompatActivity implements AdapterView.OnItemSel
     String fName, lName, phone, email, pass, city;
     Spinner spCity;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference myRef;
+    private AuthenticationService authenticationService;
+    private DatabaseService databaseService;
     public static final String MyPREFERENCES = "MyPrefs";
     SharedPreferences sharedpreferences;
 
@@ -56,11 +57,10 @@ public class Register extends AppCompatActivity implements AdapterView.OnItemSel
         init_views();
 
 
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Users");
-
-        mAuth = FirebaseAuth.getInstance();
+        /// get the instance of the authentication service
+        authenticationService = AuthenticationService.getInstance();
+        /// get the instance of the database service
+        databaseService = DatabaseService.getInstance();
 
     }
 

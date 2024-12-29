@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.screens;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.myapplication.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnRegister,btnLogin,btnAbout;
