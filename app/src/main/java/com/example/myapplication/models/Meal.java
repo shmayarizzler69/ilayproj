@@ -6,15 +6,20 @@ public class Meal {
 
     protected String id;
     protected int cal;
-    protected ArrayList <String> food= new ArrayList<>();
+    protected ArrayList <String> food;
 
     protected String detail;
+    public Meal() {
+        food = new ArrayList<>();
+    }
     public Meal(String id, ArrayList<String> food, int cal, String detail) {
         this.id = id;
         this.food = food;
         this.cal = cal;
         this.detail = detail;
     }
+
+
     public String getId() {
         return id;
     }
@@ -29,6 +34,9 @@ public class Meal {
 
     public void setFood(ArrayList<String> food) {
         this.food = food;
+    }
+    public void addFood(String item) {
+        food.add(item);
     }
 
     public int getCal() {
@@ -55,4 +63,7 @@ public class Meal {
                 ", detail='" + detail + '\'' +
                 '}';
     }
+
+
+
 }

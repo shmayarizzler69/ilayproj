@@ -5,12 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.Register">
+    tools:context=".screens.RegisterActivity">
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="178dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="62dp"
         android:layout_marginTop="77dp"
         android:layout_marginBottom="46dp"
         android:fontFamily="monospace"
@@ -21,6 +21,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/etFname"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,13 +119,6 @@
         app:layout_constraintTop_toBottomOf="@+id/etPassword"
         app:strokeColor="#838688" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="3dp"
-        tools:layout_editor_absoluteY="619dp"
-        tools:srcCompat="@tools:right" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

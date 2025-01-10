@@ -17,6 +17,9 @@ public class DatabaseService {
     /// @see Log
     private static final String TAG = "DatabaseService";
 
+    public void getUser(String uid, DatabaseCallback invalidEmailOrPassword) {
+    }
+
     /// callback interface for database operations
     /// @param <T> the type of the object to return
     /// @see DatabaseCallback#onCompleted(Object)

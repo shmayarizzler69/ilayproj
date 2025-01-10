@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.test2">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Container for dynamically adding rows -->
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Button to Add New Row -->
+        <Button
+            android:id="@+id/addRowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Row"/>
+
+        <!-- Button to Submit Second Parts -->
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit All Second Parts"/>
+
+        <!-- Button to Remove Last Row -->
+        <Button
+            android:id="@+id/removeRowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remove Last Row"/>
+
+        <!-- Button to Print Food List -->
+        <Button
+            android:id="@+id/printListButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Print Food List"/>
+
+        <!-- Button to Sum Calories -->
+        <Button
+            android:id="@+id/sumCaloriesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sum Calories"/>
+
+        <!-- TextView to display the food list -->
+        <TextView
+            android:id="@+id/foodListTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Food List will be shown here"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.myapplication.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button btnRegister,btnLogin,btnAbout;
+    Button btnRegister,btnLogin,btnAbout,btntest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
+        btntest= findViewById(R.id.btntest);
+        btntest.setOnClickListener(this);
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
         btnAbout = findViewById(R.id.btnAbout);
@@ -42,11 +44,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v==btnRegister){
 
-            Intent goReg=new Intent(getApplicationContext(), Register.class);
+            Intent goReg=new Intent(getApplicationContext(), RegisterActivity.class);
+            startActivity(goReg);
+        }
+        if (v==btntest){
+
+            Intent goReg=new Intent(getApplicationContext(), test2.class);
             startActivity(goReg);
         }
         if (v==btnLogin){
-            Intent golog=new Intent(getApplicationContext(), Login.class);
+            Intent golog=new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(golog);
         }
     }
