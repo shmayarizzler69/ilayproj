@@ -1,10 +1,16 @@
 package com.example.myapplication.services;
 import android.util.Log;
 import androidx.annotation.Nullable;
+
+import com.example.myapplication.models.Day;
+import com.example.myapplication.models.Meal;
 import com.example.myapplication.models.User;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /// a service to interact with the Firebase Realtime Database.
@@ -16,9 +22,6 @@ public class DatabaseService {
     /// tag for logging
     /// @see Log
     private static final String TAG = "DatabaseService";
-
-    public void getUser(String uid, DatabaseCallback invalidEmailOrPassword) {
-    }
 
     /// callback interface for database operations
     /// @param <T> the type of the object to return
@@ -67,13 +70,11 @@ public class DatabaseService {
     /// @param callback the callback to call when the operation is completed
     /// @return void
     /// @see DatabaseCallback
-    private void writeData(@NotNull final String path, @NotNull final Object data, final @Nullable DatabaseCallback<Void> callback) {
+    private void writeData(@NotNull final String path, @NotNull final Object data, final @NotNull DatabaseCallback<Void> callback) {
         databaseReference.child(path).setValue(data).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (callback == null) return;
                 callback.onCompleted(task.getResult());
             } else {
-                if (callback == null) return;
                 callback.onFailed(task.getException());
             }
         });
@@ -130,29 +131,141 @@ public class DatabaseService {
     /// @return void
     /// @see DatabaseCallback
     /// @see User
-    public void createNewUser(@NotNull final User user, @Nullable final DatabaseCallback<Void> callback) {
-        writeData("users/" + user.getUId(), user, callback);
+    public void createNewUser(@NotNull final User user, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("users/" + user.getId(), user, callback);
     }
 
-    /// create a new food in the database
-    /// @param food the food object to create
+    /// create a new day in the database
+    /// @param day the day object to create
     /// @param callback the callback to call when the operation is completed
     ///              the callback will receive void
     ///             if the operation fails, the callback will receive an exception
     /// @return void
     /// @see DatabaseCallback
-    /// @see Food
-  /*  public void createNewFood(@NotNull final Food food, @Nullable final DatabaseCallback<Void> callback) {
-        writeData("foods/" + food.getId(), food, callback);
+    /// @see Day
+    public void createNewDay(@NotNull final Day day, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("days/" + day.getId(), day, callback);
     }
 
-    /// create a new cart in the database
-    /// @param cart the cart object to create
+    /// create a new meal in the database
+    /// @param meal the meal object to create
     /// @param callback the callback to call when the operation is completed
     ///               the callback will receive void
     ///              if the operation fails, the callback will receive an exception
     /// @return void
     /// @see DatabaseCallback
-    /// @see Cart
-   */
+    /// @see Meal
+    public void createNewMeal(@NotNull final Meal meal, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("meals/" + meal.getId(), meal, callback);
+    }
+
+
+    /// get a user from the database
+    /// @param uid the id of the user to get
+    /// @param callback the callback to call when the operation is completed
+    ///               the callback will receive the user object
+    ///             if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see User
+    public void getUser(@NotNull final String uid, @NotNull final DatabaseCallback<User> callback) {
+        getData("users/" + uid, User.class, callback);
+    }
+
+
+
+    /// get a day from the database
+    /// @param dayId the id of the day to get
+    /// @param callback the callback to call when the operation is completed
+    ///               the callback will receive the day object
+    ///              if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see Day
+    public void getDay(@NotNull final String dayId, @NotNull final DatabaseCallback<Day> callback) {
+        getData("days/" + dayId, Day.class, callback);
+    }
+
+    /// get a meal from the database
+    /// @param mealId the id of the meal to get
+    /// @param callback the callback to call when the operation is completed
+    ///                the callback will receive the meal object
+    ///               if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see Meal
+    public void getMeal(@NotNull final String mealId, @NotNull final DatabaseCallback<Meal> callback) {
+        getData("meals/" + mealId, Meal.class, callback);
+    }
+
+    /// generate a new id for a new day in the database
+    /// @return a new id for the day
+    /// @see #generateNewId(String)
+    /// @see Day
+    public String generateDayId() {
+        return generateNewId("days");
+    }
+
+    /// generate a new id for a new meal in the database
+    /// @return a new id for the meal
+    /// @see #generateNewId(String)
+    /// @see Meal
+    public String generateMealId() {
+        return generateNewId("meals");
+    }
+
+    /// get all the days from the database
+    /// @param callback the callback to call when the operation is completed
+    ///              the callback will receive a list of day objects
+    ///            if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see List
+    /// @see Day
+    /// @see #getData(String, Class, DatabaseCallback)
+    public void getDays(@NotNull final DatabaseCallback<List<Day>> callback) {
+        readData("days").get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Error getting data", task.getException());
+                callback.onFailed(task.getException());
+                return;
+            }
+            List<Day> days = new ArrayList<>();
+            task.getResult().getChildren().forEach(dataSnapshot -> {
+                Day day = dataSnapshot.getValue(Day.class);
+                Log.d(TAG, "Got day: " + day);
+                days.add(day);
+            });
+
+            callback.onCompleted(days);
+        });
+    }
+
+    /// get all the users from the database
+    /// @param callback the callback to call when the operation is completed
+    ///              the callback will receive a list of day objects
+    ///            if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see List
+    /// @see Day
+    /// @see #getData(String, Class, DatabaseCallback)
+    public void getUsers(@NotNull final DatabaseCallback<List<User>> callback) {
+        readData("Users").get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Error getting data", task.getException());
+                callback.onFailed(task.getException());
+                return;
+            }
+            List<User> users = new ArrayList<>();
+            task.getResult().getChildren().forEach(dataSnapshot -> {
+                User user = dataSnapshot.getValue(User.class);
+                Log.d(TAG, "Got user: " + user);
+                users.add(user);
+            });
+
+            callback.onCompleted(users);
+        });
+    }
+
 }

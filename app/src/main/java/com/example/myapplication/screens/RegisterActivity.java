@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.AuthenticationService;
@@ -29,187 +29,125 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private static final String TAG = "RegisterActivity";
 
-    private EditText etEmail, etPassword, etFName, etLName, etPhone;
-    private Button btnRegister;
-    private AuthenticationService authenticationService;
-    private DatabaseService databaseService;
+    EditText etFName, etLName, etPhone, etEmail, etPass;
+    Button btnReg;
+
+    String fName, lName, phone, email, pass;
+    Spinner spCity;
+
+    AuthenticationService authenticationService;
+    DatabaseService databaseService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        /// set the layout for the activity
         setContentView(R.layout.activity_register);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        init_views();
 
-        /// get the instance of the authentication service
         authenticationService = AuthenticationService.getInstance();
-        /// get the instance of the database service
         databaseService = DatabaseService.getInstance();
 
-        /// get the views
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+    }
+
+    private void init_views() {
+        btnReg = findViewById(R.id.btnReg);
         etFName = findViewById(R.id.etFname);
         etLName = findViewById(R.id.etLname);
         etPhone = findViewById(R.id.etPhone);
-        btnRegister = findViewById(R.id.btnReg);
+        etEmail = findViewById(R.id.etEmail);
+        etPass = findViewById(R.id.etPassword);
 
-        /// set the click listener
-        btnRegister.setOnClickListener(this);
     }
 
-    @Override
     public void onClick(View v) {
-        if (v.getId() == btnRegister.getId()) {
-            Log.d(TAG, "onClick: Register button clicked");
+        fName = etFName.getText().toString();
+        lName = etLName.getText().toString();
+        phone = etPhone.getText().toString();
+        email = etEmail.getText().toString();
+        pass = etPass.getText().toString();
 
-            /// get the input from the user
-            String email = etEmail.getText().toString();
-            String password = etPassword.getText().toString();
-            String fName = etFName.getText().toString();
-            String lName = etLName.getText().toString();
-            String phone = etPhone.getText().toString();
+        //check if registration is valid
+        Boolean isValid = true;
+        if (fName.length() < 2) {
 
-            /// log the input
-            Log.d(TAG, "onClick: Email: " + email);
-            Log.d(TAG, "onClick: Password: " + password);
-            Log.d(TAG, "onClick: First Name: " + fName);
-            Log.d(TAG, "onClick: Last Name: " + lName);
-            Log.d(TAG, "onClick: Phone: " + phone);
+            etFName.setError("שם פרטי קצר מדי");
+
+            isValid = false;
+        }
+        if (lName.length() < 2) {
+            Toast.makeText(RegisterActivity.this, "שם משפחה קצר מדי", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        if (phone.length() < 9 || phone.length() > 10) {
+            Toast.makeText(RegisterActivity.this, "מספר הטלפון לא תקין", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+
+        if (!email.contains("@")) {
+            Toast.makeText(RegisterActivity.this, "כתובת האימייל לא תקינה", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        if (pass.length() < 6) {
+            Toast.makeText(RegisterActivity.this, "הסיסמה קצרה מדי", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
+        if (pass.length() > 20) {
+            Toast.makeText(RegisterActivity.this, "הסיסמה ארוכה מדי", Toast.LENGTH_LONG).show();
+            isValid = false;
+        }
 
 
+        if(isValid) {
+            authenticationService.signUp(email, pass, new AuthenticationService.AuthCallback<String>() {
+                @Override
+                public void onCompleted(String uid) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "createUserWithEmail A:success");
+                    User newUser = new User(uid, fName, lName, phone, email, pass);
+                    Log.w(TAG, newUser.toString());
 
-            /// Validate input
-            Log.d(TAG, "onClick: Validating input...");
-            if (!checkInput(email, password, fName, lName, phone)) {
-                /// stop if input is invalid
-                return;
-            }
+                    databaseService.createNewUser(newUser, new DatabaseService.DatabaseCallback<Void>() {
+                        @Override
+                        public void onCompleted(Void object) {
+                            Log.w(TAG, "createUserWithEmail DB:success");
+                            SharedPreferencesUtil.saveUser(RegisterActivity.this, newUser);
 
-            Log.d(TAG, "onClick: Registering user...");
+                            Intent goLog = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(goLog);
+                        }
 
-            /// Register user
-            registerUser(email, password, fName, lName, phone);
+                        @Override
+                        public void onFailed(Exception e) {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", e);
+                            Toast.makeText(RegisterActivity.this, "Authentication failed. DB",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "createUserWithEmail:failure", e);
+                    Toast.makeText(RegisterActivity.this, "Authentication failed. A",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
         }
     }
 
-    /// Check if the input is valid
-    /// @return true if the input is valid, false otherwise
-    /// @see Validator
-    private boolean checkInput(String email, String password, String fName, String lName, String phone) {
 
-        if (!Validator.isEmailValid(email)) {
-            Log.e(TAG, "checkInput: Invalid email address");
-            /// show error message to user
-            etEmail.setError("Invalid email address");
-            /// set focus to email field
-            etEmail.requestFocus();
-            return false;
-        }
-
-        if (!Validator.isPasswordValid(password)) {
-            Log.e(TAG, "checkInput: Password must be at least 8 characters long");
-            /// show error message to user
-            etPassword.setError("Password must be at least 8 characters long");
-            /// set focus to password field
-            etPassword.requestFocus();
-            return false;
-        }
-
-        if (!Validator.isNameValid(fName)) {
-            Log.e(TAG, "checkInput: First name must be at least 3 characters long");
-            /// show error message to user
-            etFName.setError("First name must be at least 3 characters long");
-            /// set focus to first name field
-            etFName.requestFocus();
-            return false;
-        }
-
-        if (!Validator.isNameValid(lName)) {
-            Log.e(TAG, "checkInput: Last name must be at least 3 characters long");
-            /// show error message to user
-            etLName.setError("Last name must be at least 3 characters long");
-            /// set focus to last name field
-            etLName.requestFocus();
-            return false;
-        }
-
-        if (!Validator.isPhoneValid(phone)) {
-            Log.e(TAG, "checkInput: Phone number must be at least 10 characters long");
-            /// show error message to user
-            etPhone.setError("Phone number must be at least 10 characters long");
-            /// set focus to phone field
-            etPhone.requestFocus();
-            return false;
-        }
-
-        Log.d(TAG, "checkInput: Input is valid");
-        return true;
-    }
-
-    /// Register the user
-    private void registerUser(String email, String password, String fName, String lName, String phone) {
-        Log.d(TAG, "registerUser: Registering user...");
-
-        /// call the sign up method of the authentication service
-        authenticationService.signUp(email, password, new AuthenticationService.AuthCallback<String>() {
-
-            @Override
-            public void onCompleted(String uid) {
-                Log.d(TAG, "onCompleted: User registered successfully");
-                /// create a new user object
-                User user = new User();
-                user.setId(uid);
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setFname(fName);
-                user.setLname(lName);
-                user.setPhone(phone);
-
-
-
-                /// call the createNewUser method of the database service
-                databaseService.createNewUser(user, new DatabaseService.DatabaseCallback<Void>() {
-
-                    @Override
-                    public void onCompleted(Void v) {
-                        Log.d(TAG, "onCompleted: User registered successfully");
-                        /// save the user to shared preferences
-                        SharedPreferencesUtil.saveUser(RegisterActivity.this, user);
-                        Log.d(TAG, "onCompleted: Redirecting to MainActivity");
-                        /// Redirect to MainActivity and clear back stack to prevent user from going back to register screen
-                        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-                        /// clear the back stack (clear history) and start the MainActivity
-                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(mainIntent);
-                    }
-
-
-                    @Override
-                    public void onFailed(Exception e) {
-                        Log.e(TAG, "onFailed: Failed to register user", e);
-                        /// show error message to user
-                        Toast.makeText(RegisterActivity.this, "Failed to register user", Toast.LENGTH_SHORT).show();
-                        /// sign out the user if failed to register
-                        /// this is to prevent the user from being logged in again
-                        authenticationService.signOut();
-                    }
-                });
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                Log.e(TAG, "onFailed: Failed to register user", e);
-                /// show error message to user
-                Toast.makeText(RegisterActivity.this, "Failed to register user", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-    }
 }
+
+

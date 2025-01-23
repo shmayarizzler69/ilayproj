@@ -103,7 +103,7 @@ public class SharedPreferencesUtil {
     public static void saveUser(Context context, User user) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("uid", user.getUId());
+        editor.putString("uid", user.getId());
         editor.putString("email", user.getEmail());
         editor.putString("password", user.getPassword());
         editor.putString("fName", user.getFname());
@@ -129,7 +129,7 @@ public class SharedPreferencesUtil {
         String fName = sharedPreferences.getString("fName", "");
         String lName = sharedPreferences.getString("lName", "");
         String phone = sharedPreferences.getString("phone", "");
-        return new User(uid, email, password, fName, lName, phone);
+        return new User(uid, fName, lName, phone, email, password);
     }
 
     /// Sign out the user by removing user data from shared preferences

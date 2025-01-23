@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,11 +28,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String TAG = "LoginActivity";
 
+
     private EditText etEmail, etPassword;
-    private Button btnLogin;
+    private Button btnGoLog;
 
     private AuthenticationService authenticationService;
     private DatabaseService databaseService;
+    private User user=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +53,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         /// get the instance of the database service
         databaseService = DatabaseService.getInstance();
 
+
+        user = SharedPreferencesUtil.getUser(LoginActivity.this);
         /// get the views
         etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLog);
 
+
+        etPassword = findViewById(R.id.etPassword);
+
+
+        btnGoLog = findViewById(R.id.btnLog);
+        btnGoLog.setOnClickListener(this);
+        if (user != null)
+        {
+            etEmail.setText(user.getEmail());
+            etPassword.setText(user.getPassword());
+        }
         /// set the click listener
-        btnLogin.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == btnLogin.getId()) {
+        if (v.getId() == btnGoLog.getId()) {
             Log.d(TAG, "onClick: Login button clicked");
 
             /// get the email and password entered by the user
@@ -126,10 +141,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         /// save the user data to shared preferences
                         SharedPreferencesUtil.saveUser(LoginActivity.this, user);
                         /// Redirect to main activity and clear back stack to prevent user from going back to login screen
-                        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent mainIntent = new Intent(LoginActivity.this, AfterLoginMain.class);
                         /// Clear the back stack (clear history) and start the MainActivity
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(mainIntent);
+
                     }
 
                     @Override
@@ -147,12 +163,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailed(Exception e) {
-                Log.e(TAG, "onFailed: Failed to log in user", e);
-                /// Show error message to user
-                etPassword.setError("Invalid email or password");
-                etPassword.requestFocus();
 
+                // If sign in fails, display a message to the user.
+                Log.w("TAG", "signInWithEmail:failure", e);
+                Toast.makeText(getApplicationContext(), "Authentication failed.",
+                        Toast.LENGTH_SHORT).show();
+//                                updateUI(null);
             }
+
         });
     }
 }

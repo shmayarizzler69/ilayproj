@@ -8,66 +8,58 @@
     tools:context=".screens.Addfood">
 
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="245dp"
-        android:layout_height="97dp"
-        android:text="הוסף ארוחה"
-        android:textSize="40dp"
-        tools:layout_editor_absoluteX="83dp"
-        tools:layout_editor_absoluteY="38dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="99dp"
-        android:layout_height="90dp"
-        tools:layout_editor_absoluteX="156dp"
-        tools:layout_editor_absoluteY="602dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        <!-- Spinner for selecting meal type -->
+        <Spinner
+            android:id="@+id/mealTypeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:spinnerMode="dropdown"
+            android:prompt="@string/select_meal_type" />
 
-    <Button
-        android:id="@+id/etCalc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="249dp"
-        tools:layout_editor_absoluteY="353dp" />
+        <!-- Container for dynamically adding rows -->
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/etFood"
-        android:layout_width="164dp"
-        android:layout_height="50dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Name"
-        tools:layout_editor_absoluteX="231dp"
-        tools:layout_editor_absoluteY="160dp" />
+        <!-- Button to Add New Row -->
+        <Button
+            android:id="@+id/addRowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Row" />
 
-    <EditText
-        android:id="@+id/etWhat"
-        android:layout_width="162dp"
-        android:layout_height="44dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Name"
-        tools:layout_editor_absoluteX="47dp"
-        tools:layout_editor_absoluteY="160dp" />
+        <!-- Button to Remove Last Row -->
+        <Button
+            android:id="@+id/removeRowButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remove Last Row" />
 
-    <EditText
-        android:id="@+id/editTextText4"
-        android:layout_width="186dp"
-        android:layout_height="38dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Name"
-        tools:layout_editor_absoluteX="209dp"
-        tools:layout_editor_absoluteY="420dp" />
+        <!-- Button to Print Food List -->
+        <Button
+            android:id="@+id/printListButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Print Food List" />
 
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        <!-- TextView to display the food list -->
+        <TextView
+            android:id="@+id/foodListTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Food List will be shown here"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

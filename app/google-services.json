@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "1071549051917",
-    "project_id": "skibidi-3def3",
-    "storage_bucket": "skibidi-3def3.firebasestorage.app"
+    "project_number": "503007710105",
+    "firebase_url": "https://finalproject-f8c33-default-rtdb.firebaseio.com",
+    "project_id": "finalproject-f8c33",
+    "storage_bucket": "finalproject-f8c33.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1071549051917:android:7e5a9fefd90b254ba19144",
+        "mobilesdk_app_id": "1:503007710105:android:004060c1d7602f0b46e108",
         "android_client_info": {
           "package_name": "com.example.myapplication"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCNnTlFEuEDUj-_LzLHb1_W_H9tQmYsiTI"
+          "current_key": "AIzaSyAgf_yKKC5wvtXuGAoHdFLbyAsnXUM-B-U"
         }
       ],
       "services": {

@@ -6,62 +6,142 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.test2">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <TableLayout
+        android:id="@+id/tableLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:stretchColumns="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Container for dynamically adding rows -->
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="16dp"/>
+        <!-- Header Row -->
+        <TableRow>
 
-        <!-- Button to Add New Row -->
-        <Button
-            android:id="@+id/addRowButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Row"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Meal Type / Day"
+                android:textStyle="bold" />
 
-        <!-- Button to Submit Second Parts -->
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Submit All Second Parts"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Sunday"
+                android:textStyle="bold" />
 
-        <!-- Button to Remove Last Row -->
-        <Button
-            android:id="@+id/removeRowButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Remove Last Row"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Monday"
+                android:textStyle="bold" />
 
-        <!-- Button to Print Food List -->
-        <Button
-            android:id="@+id/printListButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Print Food List"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Tuesday"
+                android:textStyle="bold" />
 
-        <!-- Button to Sum Calories -->
-        <Button
-            android:id="@+id/sumCaloriesButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sum Calories"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Wednesday"
+                android:textStyle="bold" />
 
-        <!-- TextView to display the food list -->
-        <TextView
-            android:id="@+id/foodListTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Food List will be shown here"
-            android:textSize="16sp"/>
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Thursday"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Friday"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Saturday"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <!-- Breakfast Row -->
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#F0F0F0"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Breakfast" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write here" />
+        </TableRow>
+
+        <!-- Add rows for Lunch, Dinner, etc., as needed -->
+
+    </TableLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

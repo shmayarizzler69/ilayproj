@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Meal {
 
-    protected String id;
+    protected String id, type;
     protected int cal;
     protected ArrayList <String> food;
 
@@ -17,6 +17,7 @@ public class Meal {
         this.food = food;
         this.cal = cal;
         this.detail = detail;
+
     }
 
 
