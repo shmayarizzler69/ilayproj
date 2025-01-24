@@ -1,5 +1,6 @@
 package com.example.myapplication.screens;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -18,8 +19,11 @@ import java.util.HashMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 public class Addfood extends AppCompatActivity {
+    private DatabaseReference databaseReference;
+
     private LinearLayout container;
     private Meal meal;
     private TextView foodListTextView;
@@ -35,6 +39,18 @@ public class Addfood extends AppCompatActivity {
         foodListTextView = findViewById(R.id.foodListTextView);
         foodInputs = new HashMap<>();
 
+// Initialize Firebase database reference
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        Button submitButton = findViewById(R.id.submitButton);
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveMealToFirebase(); // Call method to submit food to database
+            }
+        });
+
+        // Other initialization code for your views and buttons...
         // Add Row Button
         Button addRowButton = findViewById(R.id.addRowButton);
         addRowButton.setOnClickListener(new View.OnClickListener() {
@@ -207,4 +223,73 @@ public class Addfood extends AppCompatActivity {
 
         foodListTextView.setText(foodList.toString());
     }
+    private void saveMealToFirebase() {
+        // Create a new meal ID (you can generate it or get a reference to it)
+        String mealId = databaseReference.child("Meals").push().getKey();  // Generate a unique ID
+
+        // Set the details of the meal
+        meal.setId(mealId);
+        meal.setCal(calculateTotalCalories());  // Calculate total calories from user input
+        meal.setDetail(meal.getDetail());  // Meal type (e.g., Breakfast, Lunch, Dinner, etc.)
+
+        // Save the meal in Firebase
+        if (mealId != null) {
+            databaseReference.child("Meals").child(mealId).setValue(meal)
+                    .addOnSuccessListener(aVoid -> {
+                        // After the meal is saved successfully, navigate to the home screen
+                        Toast.makeText(Addfood.this, "Meal saved successfully!", Toast.LENGTH_SHORT).show();
+
+                        // Navigate to the home screen
+                        Intent intent = new Intent(Addfood.this, AfterLoginMain.class); // Replace 'HomeActivity' with your actual home screen activity
+                        startActivity(intent);
+
+                        // Optionally, finish the current activity so the user can't go back to it
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure (e.g., network error or saving failure)
+                        Toast.makeText(Addfood.this, "Failed to save meal.", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
+
+    private int calculateTotalCalories() {
+        int totalCalories = 0;
+
+        // Iterate through the food inputs and sum up the calories
+        for (int i = 0; i < container.getChildCount(); i++) {
+            LinearLayout row = (LinearLayout) container.getChildAt(i);
+
+            // Ensure there are at least two EditTexts (calories and food)
+            if (row.getChildCount() >= 2) {
+                EditText caloriesEditText = (EditText) row.getChildAt(0);
+                String caloriesText = caloriesEditText.getText().toString().trim();
+
+                if (!caloriesText.isEmpty()) {
+                    totalCalories += Integer.parseInt(caloriesText);  // Add the calories to the total
+                }
+            }
+        }
+
+        return totalCalories;
+    }
+    private void linkMealToDay(String dayId, String weekId) {
+        // Create a reference to the specific day
+        DatabaseReference dayRef = databaseReference.child("Days").child(dayId);
+
+        // Add the meal ID to the day's food list
+        dayRef.child("food").child(meal.getId()).setValue(true)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(Addfood.this, "Meal linked to day successfully!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(Addfood.this, "Failed to link meal to day.", Toast.LENGTH_SHORT).show();
+                });
+
+        // Link the day to the week as well
+        DatabaseReference weekRef = databaseReference.child("Weeks").child(weekId);
+        weekRef.child("days").child(dayId).setValue(true);
+    }
+
 }
