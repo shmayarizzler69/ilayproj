@@ -9,15 +9,15 @@
 
     <Button
         android:id="@+id/btnGoAbout"
-        android:layout_width="220dp"
+        android:layout_width="194dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="356dp"
+        android:layout_marginStart="98dp"
+        android:layout_marginBottom="91dp"
         android:background="#0F1010"
         android:text="כפתור לאפליקציה"
         android:textColor="@color/white"
         android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btninfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnGotest" />
 
@@ -25,35 +25,37 @@
         android:id="@+id/tvGoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="63dp"
-        android:layout_marginBottom="288dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="60dp"
         android:text="מסך בית "
         android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/btninfo"
-        app:layout_constraintStart_toStartOf="@+id/btnGotest"
+        app:layout_constraintBottom_toTopOf="@+id/btnGotest"
+        app:layout_constraintEnd_toEndOf="@+id/btnGotest"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnGotest"
-        android:layout_width="173dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="13dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="54dp"
         android:text="מחשבון קלוריות"
         app:layout_constraintBottom_toTopOf="@+id/btnGoAbout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnGoAbout"
+        app:layout_constraintStart_toStartOf="@+id/btnGoAbout"
         app:layout_constraintTop_toBottomOf="@+id/tvGoTitle" />
 
     <Button
         android:id="@+id/btninfo"
         android:layout_width="217dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="225dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="48dp"
         android:text="פרטי חשבון"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvGoTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGoAbout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,12 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".screens.MealPage"
+            android:exported="false" />
+        <activity
+            android:name=".screens.CalendarActivity"
+            android:exported="false" />
+        <activity
             android:name=".screens.newtest"
             android:exported="false" />
         <activity

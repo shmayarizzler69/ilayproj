@@ -15,15 +15,16 @@
         android:padding="16dp">
 
         <!-- Spinner for selecting meal type -->
+
+        <!-- Container for dynamically adding rows -->
         <Spinner
             android:id="@+id/mealTypeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:spinnerMode="dropdown"
-            android:prompt="@string/select_meal_type" />
+            android:prompt="@string/select_meal_type"
+            android:spinnerMode="dropdown" />
 
-        <!-- Container for dynamically adding rows -->
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -60,6 +61,7 @@
             android:layout_marginTop="16dp"
             android:text="Food List will be shown here"
             android:textSize="16sp" />
+
         <Button
             android:id="@+id/submitButton"
             android:layout_width="wrap_content"

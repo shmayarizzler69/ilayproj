@@ -5,31 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.CalendarActivity">
-    <!-- res/layout/activity_calendar.xml -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".screens.MealPage">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <!-- Display selected month and year -->
         <TextView
-            android:id="@+id/monthYearText"
+            android:id="@+id/dayLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="January 2025"
+            android:text="Meals for:"
             android:textSize="20sp"
             android:layout_margin="16dp"/>
 
-        <!-- Dynamic Grid for calendar days -->
-        <GridLayout
-            android:id="@+id/calendarGrid"
+        <ListView
+            android:id="@+id/mealsListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="7"
-            android:orientation="horizontal" />
+            android:layout_height="match_parent"/>
 
-    </LinearLayout>
-
-
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,14 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.widget.AdapterView;
 import android.widget.Spinner;
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 import com.example.myapplication.utils.SharedPreferencesUtil;
-import com.example.myapplication.utils.Validator;
 
 /// Activity for registering the user
 /// This activity is used to register the user
@@ -33,7 +31,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     Button btnReg;
 
     String fName, lName, phone, email, pass;
-    Spinner spCity;
 
     AuthenticationService authenticationService;
     DatabaseService databaseService;
@@ -147,7 +144,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
 }
-
-

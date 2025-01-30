@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,21 +14,31 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 import com.example.myapplication.R;
+import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-public class Addfood extends AppCompatActivity {
-    private DatabaseReference databaseReference;
 
+import com.example.myapplication.services.AuthenticationService;
+import com.example.myapplication.services.DatabaseService;
+public class Addfood extends AppCompatActivity {
+
+
+    private static final String TAG = "AddFood";
     private LinearLayout container;
     private Meal meal;
     private TextView foodListTextView;
     private HashMap<Integer, String> foodInputs;
+
+    AuthenticationService authenticationService;
+    DatabaseService databaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +50,83 @@ public class Addfood extends AppCompatActivity {
         foodListTextView = findViewById(R.id.foodListTextView);
         foodInputs = new HashMap<>();
 
-// Initialize Firebase database reference
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        authenticationService = AuthenticationService.getInstance();
+        databaseService = DatabaseService.getInstance();
+
+        String currentUserId = authenticationService.getCurrentUserId();
+
+        Date currentDate = getCurrentDate();
+
+        // Initialize Firebase database reference
+
         Button submitButton = findViewById(R.id.submitButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveMealToFirebase(); // Call method to submit food to database
+                databaseService.searchDayByDate(currentDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
+                    @Override
+                    public void onCompleted(Day day) {
+
+                        meal.setCal(calculateTotalCalories());  // Calculate total calories from user input
+
+                        if(day!=null) {
+                            day.addMeal(meal);
+
+                            databaseService.updateDay(day, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
+                                @Override
+                                public void onCompleted(Void object) {
+                                    Log.d(TAG, "Day created updated");
+                                    Toast.makeText(getApplicationContext(), "ahhhhhhhhhh", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailed(Exception e) {
+
+                                }
+                            });
+                            return;
+                        }
+
+                        day=new Day();
+
+                        /// generate a new id for the new Day
+                        String DayId = databaseService.generateDayId();
+                        /// set the id of the Day
+                        day.setId(DayId);
+
+                        // Get the current date or pass a specific date
+                        day.setDate(getCurrentDate());
+                        day.setSumcal(0);
+                        day.addMeal(meal);
+
+
+                        /// save the Day to the database and get the result in the callback
+                        databaseService.createNewDay(day, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
+                            @Override
+                            public void onCompleted(Void object) {
+                                Log.d(TAG, "Day created successfully");
+
+                                Toast.makeText(Addfood.this, "Day created successfully", Toast.LENGTH_SHORT).show();
+
+                                Intent goReg = new Intent(getApplicationContext(), AfterLoginMain.class);
+                                startActivity(goReg);
+
+                            }
+
+                            @Override
+                            public void onFailed(Exception e) {
+                                Log.e(TAG, "Failed to create Day", e);
+                                Toast.makeText(Addfood.this, "Failed to create Day", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+
+                    }
+                });
             }
         });
 
@@ -223,36 +303,11 @@ public class Addfood extends AppCompatActivity {
 
         foodListTextView.setText(foodList.toString());
     }
-    private void saveMealToFirebase() {
-        // Create a new meal ID (you can generate it or get a reference to it)
-        String mealId = databaseReference.child("Meals").push().getKey();  // Generate a unique ID
 
-        // Set the details of the meal
-        meal.setId(mealId);
-        meal.setCal(calculateTotalCalories());  // Calculate total calories from user input
-        meal.setDetail(meal.getDetail());  // Meal type (e.g., Breakfast, Lunch, Dinner, etc.)
 
-        // Save the meal in Firebase
-        if (mealId != null) {
-            databaseReference.child("Meals").child(mealId).setValue(meal)
-                    .addOnSuccessListener(aVoid -> {
-                        // After the meal is saved successfully, navigate to the home screen
-                        Toast.makeText(Addfood.this, "Meal saved successfully!", Toast.LENGTH_SHORT).show();
-
-                        // Navigate to the home screen
-                        Intent intent = new Intent(Addfood.this, AfterLoginMain.class); // Replace 'HomeActivity' with your actual home screen activity
-                        startActivity(intent);
-
-                        // Optionally, finish the current activity so the user can't go back to it
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle failure (e.g., network error or saving failure)
-                        Toast.makeText(Addfood.this, "Failed to save meal.", Toast.LENGTH_SHORT).show();
-                    });
-        }
+    private Date getCurrentDate() {
+        return new Date();
     }
-
 
     private int calculateTotalCalories() {
         int totalCalories = 0;
@@ -274,22 +329,6 @@ public class Addfood extends AppCompatActivity {
 
         return totalCalories;
     }
-    private void linkMealToDay(String dayId, String weekId) {
-        // Create a reference to the specific day
-        DatabaseReference dayRef = databaseReference.child("Days").child(dayId);
 
-        // Add the meal ID to the day's food list
-        dayRef.child("food").child(meal.getId()).setValue(true)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(Addfood.this, "Meal linked to day successfully!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(Addfood.this, "Failed to link meal to day.", Toast.LENGTH_SHORT).show();
-                });
-
-        // Link the day to the week as well
-        DatabaseReference weekRef = databaseReference.child("Weeks").child(weekId);
-        weekRef.child("days").child(dayId).setValue(true);
-    }
 
 }

@@ -3,25 +3,24 @@ package com.example.myapplication.models;
 import java.util.ArrayList;
 
 public class Meal {
-    private String id;
+
     private int cal;
     private ArrayList<String> food;
     private String detail;
+// Add this field to link meals to users
+
+
+
 
     public Meal() {
-        // Default constructor required for Firebase
         this.food = new ArrayList<>();
     }
 
-    public Meal(String id, ArrayList<String> food, int cal, String detail) {
-        this.id = id;
-        this.food = food;
+    public Meal(int cal, ArrayList<String> food, String detail) {
         this.cal = cal;
+        this.food = food;
         this.detail = detail;
     }
-
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
 
     public ArrayList<String> getFood() { return food; }
     public void setFood(ArrayList<String> food) { this.food = food; }
@@ -31,4 +30,14 @@ public class Meal {
 
     public String getDetail() { return detail; }
     public void setDetail(String detail) { this.detail = detail; }
+
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "cal=" + cal +
+                ", food=" + food +
+                ", detail='" + detail + '\'' +
+                '}';
+    }
 }
