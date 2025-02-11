@@ -28,7 +28,6 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
 
 
 
-
         });
         initViews();
 
@@ -49,8 +48,8 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
 
         if (v==btntest){
 
-            Intent goReg=new Intent(getApplicationContext(), Addfood.class);
-            startActivity(goReg);
+            Intent goAdd=new Intent(getApplicationContext(), Addfood.class);
+            startActivity(goAdd);
         }
         if (v==btnAbout){
             Intent golog=new Intent(getApplicationContext(), CalendarActivity.class);

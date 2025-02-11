@@ -6,6 +6,7 @@ import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
 import com.example.myapplication.models.MyDate;
 import com.example.myapplication.models.User;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -253,6 +255,22 @@ public class DatabaseService {
                 callback.onFailed(e);
             }
         });
+    }
+    public void fetchAllDays(String userId, DatabaseCallback<HashMap<Long, Day>> callback) {
+        databaseReference.child("users").child(userId).child("days")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    HashMap<Long, Day> days = new HashMap<>();
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Day day = data.getValue(Day.class);
+                        if (day != null) {
+                            long dateKey = day.getDate().asDate().getTime(); // Convert to timestamp
+                            days.put(dateKey, day);
+                        }
+                    }
+                    callback.onCompleted(days);
+                })
+                .addOnFailureListener(callback::onFailed);
     }
 
 
