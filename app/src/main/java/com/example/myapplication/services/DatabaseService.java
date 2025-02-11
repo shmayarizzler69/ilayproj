@@ -4,14 +4,19 @@ import androidx.annotation.Nullable;
 
 import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
+import com.example.myapplication.models.MyDate;
 import com.example.myapplication.models.User;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 
 /// a service to interact with the Firebase Realtime Database.
@@ -107,6 +112,27 @@ public class DatabaseService {
             }
             T data = task.getResult().getValue(clazz);
             callback.onCompleted(data);
+        });
+    }
+
+    /// get a list of data from the database at a specific path
+    /// @param path the path to get the data from
+    /// @param clazz the class of the objects to return
+    /// @param callback the callback to call when the operation is completed
+    private <T> void getDataList(@NotNull final String path, @NotNull final Class<T> clazz, @NotNull final DatabaseCallback<List<T>> callback) {
+        readData(path).get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Error getting data", task.getException());
+                callback.onFailed(task.getException());
+                return;
+            }
+            List<T> tList = new ArrayList<>();
+            task.getResult().getChildren().forEach(dataSnapshot -> {
+                T t = dataSnapshot.getValue(clazz);
+                tList.add(t);
+            });
+
+            callback.onCompleted(tList);
         });
     }
 
@@ -208,62 +234,25 @@ public class DatabaseService {
         return generateNewId("meals");
     }
 
-    /// get all the days from the database
-    /// @param callback the callback to call when the operation is completed
-    ///              the callback will receive a list of day objects
-    ///            if the operation fails, the callback will receive an exception
-    /// @return void
-    /// @see DatabaseCallback
-    /// @see List
-    /// @see Day
-    /// @see #getData(String, Class, DatabaseCallback)
-    public void getDays(String path,  @NotNull final DatabaseCallback<List<Day>> callback) {
-        readData( path+"days").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e(TAG, "Error getting data", task.getException());
-                callback.onFailed(task.getException());
-                return;
-            }
-            List<Day> days = new ArrayList<>();
-            task.getResult().getChildren().forEach(dataSnapshot -> {
-                Day day = dataSnapshot.getValue(Day.class);
-                Log.d(TAG, "Got day: " + day);
-                days.add(day);
-            });
+    public void searchDayByDate(MyDate myDate, String userId, @NotNull final DatabaseCallback<Day> callback) {
 
-            callback.onCompleted(days);
-        });
-    }
-
-
-
-
-
-    public void searchDayByDate(Date date, String userId, @NotNull final DatabaseCallback<Day> callback) {
-        readData( "Users/"+userId+"/days").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e(TAG, "Error getting data", task.getException());
-                callback.onFailed(task.getException());
-                return;
-            }
-            List<Day> days = new ArrayList<>();
-            task.getResult().getChildren().forEach(dataSnapshot -> {
-                Day day = dataSnapshot.getValue(Day.class);
-                if (day == null) return;
-
-                if(day.getDate().equals(date)) {
-                    callback.onCompleted(day);
+        getDataList("Users/" + userId + "/days", Day.class, new DatabaseCallback<List<Day>>() {
+            @Override
+            public void onCompleted(List<Day> days) {
+                for (Day day : days) {
+                    if (day.getDate().equals(myDate)) {
+                        callback.onCompleted(day);
+                        return;
+                    }
                 }
+                callback.onCompleted(null);
+            }
 
-                Log.d(TAG, "Got day: " + day);
-                days.add(day);
-            });
-
-
-            callback.onCompleted(null);
+            @Override
+            public void onFailed(Exception e) {
+                callback.onFailed(e);
+            }
         });
-
-
     }
 
 

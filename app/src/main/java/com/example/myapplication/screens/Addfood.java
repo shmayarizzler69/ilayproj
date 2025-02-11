@@ -11,21 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 import com.example.myapplication.R;
+import com.example.myapplication.models.MyDate;
 import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 public class Addfood extends AppCompatActivity {
@@ -55,7 +55,7 @@ public class Addfood extends AppCompatActivity {
 
         String currentUserId = authenticationService.getCurrentUserId();
 
-        Date currentDate = getCurrentDate();
+        MyDate currentMyDate = new MyDate(getCurrentDate());
 
         // Initialize Firebase database reference
 
@@ -64,20 +64,21 @@ public class Addfood extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseService.searchDayByDate(currentDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
+                databaseService.searchDayByDate(currentMyDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
                     @Override
-                    public void onCompleted(Day day) {
+                    public void onCompleted(@Nullable Day day) {
 
                         meal.setCal(calculateTotalCalories());  // Calculate total calories from user input
 
-                        if(day!=null) {
+                        if(day != null) {
                             day.addMeal(meal);
 
                             databaseService.updateDay(day, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
                                 @Override
                                 public void onCompleted(Void object) {
-                                    Log.d(TAG, "Day created updated");
-                                    Toast.makeText(getApplicationContext(), "ahhhhhhhhhh", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "Day updated updated");
+                                    Toast.makeText(Addfood.this, "Day updated successfully", Toast.LENGTH_SHORT).show();
+                                    finish();
                                 }
 
                                 @Override
@@ -96,7 +97,7 @@ public class Addfood extends AppCompatActivity {
                         day.setId(DayId);
 
                         // Get the current date or pass a specific date
-                        day.setDate(getCurrentDate());
+                        day.setDate(new MyDate(getCurrentDate()));
                         day.setSumcal(0);
                         day.addMeal(meal);
 
@@ -108,9 +109,7 @@ public class Addfood extends AppCompatActivity {
                                 Log.d(TAG, "Day created successfully");
 
                                 Toast.makeText(Addfood.this, "Day created successfully", Toast.LENGTH_SHORT).show();
-
-                                Intent goReg = new Intent(getApplicationContext(), AfterLoginMain.class);
-                                startActivity(goReg);
+                                finish();
 
                             }
 

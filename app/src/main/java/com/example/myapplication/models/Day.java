@@ -1,11 +1,10 @@
 package com.example.myapplication.models;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Day {
     private String id;
-    private Date date;
+    private MyDate date;
     private ArrayList<Meal> meals;
     private int sumcal;
 
@@ -17,7 +16,7 @@ public class Day {
     }
 
 
-    public Day(String id, Date date, ArrayList<Meal> meals, int sumcal) {
+    public Day(String id, MyDate date, ArrayList<Meal> meals, int sumcal) {
         this.id = id;
         this.date = date;
         this.meals = meals;
@@ -32,11 +31,11 @@ public class Day {
         this.id = id;
     }
 
-    public Date getDate() {
+    public MyDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(MyDate date) {
         this.date = date;
     }
 

@@ -76,12 +76,12 @@ public class CalendarActivity extends AppCompatActivity {
         // Loop through the userDays and create a button for each day
         for (final Day day : userDays) {
             Button dayButton = new Button(this);
-            dayButton.setText(day.getDayInWeek()); // Display the day number
+          /*  dayButton.setText(day.getDayInWeek()); // Display the day number */
             dayButton.setLayoutParams(new GridLayout.LayoutParams());
             dayButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openMealPage(day.getDayInWeek()); // Open MealPage activity for this day
+                   /* openMealPage(day.getDayInWeek()); // Open MealPage activity for this day */
                 }
             });
 
