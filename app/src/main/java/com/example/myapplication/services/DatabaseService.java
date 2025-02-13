@@ -93,6 +93,14 @@ public class DatabaseService {
     /// @return a DatabaseReference object to read the data from
     /// @see DatabaseReference
 
+    public void getDaysForUser(String userId, DatabaseCallback<List<Day>> callback) {
+        // Your Firebase logic to fetch days for a user
+    }
+
+    public void getDayById(String dayId, DatabaseCallback<Day> callback) {
+        // Your Firebase logic to fetch a specific day by its ID
+    }
+
     private DatabaseReference readData(@NotNull final String path) {
         return databaseReference.child(path);
     }
