@@ -6,10 +6,13 @@ import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
 import com.example.myapplication.models.MyDate;
 import com.example.myapplication.models.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -92,15 +95,6 @@ public class DatabaseService {
     /// @param path the path to read the data from
     /// @return a DatabaseReference object to read the data from
     /// @see DatabaseReference
-
-    public void getDaysForUser(String userId, DatabaseCallback<List<Day>> callback) {
-        // Your Firebase logic to fetch days for a user
-    }
-
-    public void getDayById(String dayId, DatabaseCallback<Day> callback) {
-        // Your Firebase logic to fetch a specific day by its ID
-    }
-
     private DatabaseReference readData(@NotNull final String path) {
         return databaseReference.child(path);
     }
@@ -156,6 +150,7 @@ public class DatabaseService {
         return databaseReference.child(path).push().getKey();
     }
 
+
     // end of private methods for reading and writing data
 
     // public methods to interact with the database
@@ -168,25 +163,18 @@ public class DatabaseService {
     /// @return void
     /// @see DatabaseCallback
     /// @see User
+    public String getCurrentUserId() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            return auth.getCurrentUser().getUid(); // Get the user ID from Firebase Authentication
+        } else {
+            return null; // Return null if no user is logged in
+        }
+    }
+
+
     public void createNewUser(@NotNull final User user, @NotNull final DatabaseCallback<Void> callback) {
         writeData("Users/" + user.getId(), user, callback);
-    }
-
-    /// create a new day in the database
-    /// @param day the day object to create
-    /// @param callback the callback to call when the operation is completed
-    ///              the callback will receive void
-    ///             if the operation fails, the callback will receive an exception
-    /// @return void
-    /// @see DatabaseCallback
-    /// @see Day
-    public void createNewDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
-        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
-    }
-
-
-    public void updateDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
-        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
     }
 
 
@@ -200,20 +188,6 @@ public class DatabaseService {
     /// @see User
     public void getUser(@NotNull final String uid, @NotNull final DatabaseCallback<User> callback) {
         getData("Users/" + uid, User.class, callback);
-    }
-
-
-
-    /// get a day from the database
-    /// @param dayId the id of the day to get
-    /// @param callback the callback to call when the operation is completed
-    ///               the callback will receive the day object
-    ///              if the operation fails, the callback will receive an exception
-    /// @return void
-    /// @see DatabaseCallback
-    /// @see Day
-    public void getDay(@NotNull final String dayId, @NotNull final DatabaseCallback<Day> callback) {
-        getData("days/" + dayId, Day.class, callback);
     }
 
     /// get a meal from the database
@@ -292,21 +266,31 @@ public class DatabaseService {
     /// @see Day
     /// @see #getData(String, Class, DatabaseCallback)
     public void getUsers(@NotNull final DatabaseCallback<List<User>> callback) {
-        readData("Users").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e(TAG, "Error getting data", task.getException());
-                callback.onFailed(task.getException());
-                return;
-            }
-            List<User> users = new ArrayList<>();
-            task.getResult().getChildren().forEach(dataSnapshot -> {
-                User user = dataSnapshot.getValue(User.class);
-                Log.d(TAG, "Got user: " + user);
-                users.add(user);
-            });
+        getDataList("users", User.class, callback);
+    }
 
-            callback.onCompleted(users);
-        });
+
+
+    /// create a new day in the database
+    /// @param day the day object to create
+    /// @param callback the callback to call when the operation is completed
+    ///              the callback will receive void
+    ///             if the operation fails, the callback will receive an exception
+    /// @return void
+    /// @see DatabaseCallback
+    /// @see Day
+    public void createNewDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
+    }
+    public void updateDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
+    }
+    public void getDayById(String userId, String dayId, DatabaseCallback<Day> callback) {
+        getData("users/"+ userId + "/days/"+ dayId, Day.class, callback);
+    }
+
+    public void fetchDays(String userId, final DatabaseCallback<List<Day>> callback) {
+        getDataList("users/"+ userId + "/days", Day.class, callback);
     }
 
 }

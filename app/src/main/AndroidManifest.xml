@@ -13,10 +13,16 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".screens.MealDetailActivity"
+            android:name=".screens.DayDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.DayDetailActivity"
+            android:name=".screens.MealDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.DaysCalender"
+            android:exported="false" />
+        <activity
+            android:name=".screens.MealDetailActivity"
             android:exported="false" />
         <activity
             android:name=".screens.DayListActivity"
