@@ -2,6 +2,7 @@ package com.example.myapplication.screens;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,43 +13,43 @@ import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 
 public class DayDetailActivity extends AppCompatActivity {
-    private TextView detailsTextView;
-
+    private TextView tvDayDetail, tvMeals;
     private DatabaseService databaseService;
+    Day day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_detail);
 
-        detailsTextView = findViewById(R.id.detailsTextView);
-
+        tvDayDetail = findViewById(R.id.tvDayDetail);
+        tvMeals = findViewById(R.id.tvMeals);
         databaseService = DatabaseService.getInstance();
 
-        String dayId = getIntent().getStringExtra("dayId");
+        day = (Day) getIntent().getSerializableExtra("day");
 
-        databaseService.getDayById(AuthenticationService.getInstance().getCurrentUserId(), dayId, new DatabaseService.DatabaseCallback<Day>() {
-            @Override
-            public void onCompleted(Day day) {
-                if (day != null) {
-                    StringBuilder details = new StringBuilder();
-                    details.append("Date: ").append(day.getDate().toString()).append("\n");
-                    details.append("Total Calories: ").append(day.getSumcal()).append("\n");
-                    details.append("Meals:\n");
+        if (day != null) {
 
+
+            tvDayDetail.setText("Date: " + day.getDate().toString() +
+                            "\nTotal Calories: " + day.getSumcal());
+
+                    StringBuilder mealsDetails = new StringBuilder();
                     for (Meal meal : day.getMeals()) {
-                        details.append("- ").append(meal.getDetail()).append(": ")
-                                .append(meal.getCal()).append(" cal\n");
+                        mealsDetails.append(meal.getDetail()).append(":\n");
+                        for (String food : meal.getFood()) {
+                            mealsDetails.append("- ").append(food).append("\n");
+                        }
+                        mealsDetails.append("\n");
                     }
 
-                    detailsTextView.setText(details.toString());
-                }
-            }
+                    tvMeals.setText(mealsDetails.toString());
 
-            @Override
-            public void onFailed(Exception e) {
-                e.printStackTrace();
-            }
-        });
+
+
+
+
+
+        }
     }
 }

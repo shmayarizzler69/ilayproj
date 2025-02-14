@@ -16,34 +16,7 @@
             android:name=".screens.DayDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.MealDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screens.DaysCalender"
-            android:exported="false" />
-        <activity
-            android:name=".screens.MealDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screens.DayListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screens.MealsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".calender2"
-            android:exported="false" />
-        <activity
-            android:name=".screens.SearchUsers"
-            android:exported="false" />
-        <activity
-            android:name=".screens.MealPage"
-            android:exported="false" />
-        <activity
-            android:name=".screens.CalendarActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screens.newtest"
+            android:name=".screens.DaysListActivity"
             android:exported="false" />
         <activity
             android:name=".screens.infouser"

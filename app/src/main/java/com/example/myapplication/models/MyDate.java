@@ -23,6 +23,7 @@ public class MyDate implements Serializable {
         this.year = currentDate.getYear();
     }
 
+
     public Date asDate() {
         return new Date(year, month, day);
     }
@@ -66,6 +67,15 @@ public class MyDate implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         MyDate myDate = (MyDate) o;
         return day == myDate.day && month == myDate.month && year == myDate.year;
+    }
+    public int compareTo(MyDate other) {
+        if (this.year != other.year) {
+            return Integer.compare(this.year, other.year);
+        }
+        if (this.month != other.month) {
+            return Integer.compare(this.month, other.month);
+        }
+        return Integer.compare(this.day, other.day);
     }
 
     @Override

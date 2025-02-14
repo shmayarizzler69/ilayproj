@@ -1,5 +1,7 @@
 package com.example.myapplication.services;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.myapplication.models.Day;
@@ -17,6 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -239,7 +243,7 @@ public class DatabaseService {
         });
     }
     public void fetchAllDays(String userId, DatabaseCallback<HashMap<Long, Day>> callback) {
-        databaseReference.child("users").child(userId).child("days")
+        databaseReference.child("Users").child(userId).child("days")
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     HashMap<Long, Day> days = new HashMap<>();
@@ -266,7 +270,7 @@ public class DatabaseService {
     /// @see Day
     /// @see #getData(String, Class, DatabaseCallback)
     public void getUsers(@NotNull final DatabaseCallback<List<User>> callback) {
-        getDataList("users", User.class, callback);
+        getDataList("Users", User.class, callback);
     }
 
 
@@ -286,11 +290,56 @@ public class DatabaseService {
         writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
     }
     public void getDayById(String userId, String dayId, DatabaseCallback<Day> callback) {
-        getData("users/"+ userId + "/days/"+ dayId, Day.class, callback);
+        getData("Users/"+ userId + "/days/"+ dayId, Day.class, callback);
     }
 
     public void fetchDays(String userId, final DatabaseCallback<List<Day>> callback) {
-        getDataList("users/"+ userId + "/days", Day.class, callback);
+        getDataList("Users/"+ userId + "/days", Day.class, callback);
+    }
+
+    public void getAllDays(String userId, DatabaseCallback<List<Day>> callback) {
+        // Reference to the user's "days" node in Firebase
+        DatabaseReference userDaysRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(userId)
+                .child("days");
+
+        // Listen for data at this reference
+        userDaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Day> days = new ArrayList<>();
+
+                // Iterate through the children of "days" (each child is a day)
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Map the snapshot to a Day object
+                    Day day = snapshot.getValue(Day.class);
+
+                    // Ensure day is not null before adding to the list
+                    if (day != null) {
+                        days.add(day);
+                    }
+                }
+
+                // Sort the list of days by date (you can modify this logic if needed)
+                Collections.sort(days, new Comparator<Day>() {
+                    @Override
+                    public int compare(Day day1, Day day2) {
+                        return day1.getDate().compareTo(day2.getDate()); // Compare based on date
+                    }
+                });
+
+                // Pass the list of days to the callback
+                callback.onCompleted(days);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // If there is an error retrieving data, pass the exception to the callback
+                callback.onFailed(databaseError.toException());
+            }
+        });
     }
 
 }
+
+

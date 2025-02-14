@@ -30,7 +30,8 @@ import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 public class Addfood extends AppCompatActivity {
 
-
+//https://heli-group.co.il/%d7%9e%d7%97%d7%a9%d7%91%d7%95%d7%a0%d7%99%d7%9d/
+//    מחשבון לחישוב קלוריות אוטומטי
     private static final String TAG = "AddFood";
     private LinearLayout container;
     private Meal meal;

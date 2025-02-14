@@ -1,6 +1,10 @@
 package com.example.myapplication.screens;
 
+import static com.example.myapplication.R.id.recyclerViewDays;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,46 +13,59 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.Adapters.DaysAdapter;
 import com.example.myapplication.models.Day;
+import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DaysListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DaysAdapter adapter;
-    private ArrayList<Day> daysList;
-
+    private List<Day> dayList;
     private DatabaseService databaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_days_list);
+        setContentView(R.layout.activity_days_list); // Your layout file
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(recyclerViewDays);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        dayList = new ArrayList<>();
+        adapter = new DaysAdapter(dayList, day -> {
+            // Open a new activity to show details
+            Intent intent = new Intent(DaysListActivity.this, DayDetailActivity.class);
+            intent.putExtra("day", day);
+            startActivity(intent);
+        });
 
-        daysList = new ArrayList<>();
-        adapter = new DaysAdapter(this, daysList);
-        recyclerView.setAdapter(adapter);
+
 
         databaseService = DatabaseService.getInstance();
 
-        String currentUserId = databaseService.getCurrentUserId();
-        databaseService.fetchDays(currentUserId, new DatabaseService.DatabaseCallback<List<Day>>() {
+        String currentUserId = AuthenticationService.getInstance().getCurrentUserId();
+
+        databaseService.getAllDays(currentUserId, new DatabaseService.DatabaseCallback<List<Day>>() {
             @Override
             public void onCompleted(List<Day> days) {
-                daysList.clear();
-                daysList.addAll(days);
-                daysList.sort((d1, d2) -> d1.getDate().asDate().compareTo(d2.getDate().asDate())); // Sort by date
-                adapter.notifyDataSetChanged();
+                dayList.clear();
+                dayList.addAll(days);
+                // Sort the list by date
+                Collections.sort(dayList, (d1, d2) -> d2.getDate().compareTo(d1.getDate()));
+
+
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
             public void onFailed(Exception e) {
-                e.printStackTrace();
+                Toast.makeText(DaysListActivity.this, "Failed to load days", Toast.LENGTH_SHORT).show();
             }
+
+
+
         });
     }
 }

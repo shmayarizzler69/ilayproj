@@ -1,8 +1,9 @@
 package com.example.myapplication.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Day {
+public class Day  implements Serializable {
     private String id;
     private MyDate date;
     private ArrayList<Meal> meals;
@@ -61,6 +62,8 @@ public class Day {
         this.sumcal+=meal.getCal();
 
     }
+
+
 
     @Override
     public String toString() {

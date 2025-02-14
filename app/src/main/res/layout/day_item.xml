@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/dateTextView"
+        android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Date"
@@ -14,10 +14,14 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/sumCalTextView"
+        android:id="@+id/tvTotalCalories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calories"
-        android:textSize="16sp" />
+        android:text="Total Calories"
+        android:textSize="14sp" />
+
+
+
 </LinearLayout>
+
 
