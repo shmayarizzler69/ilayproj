@@ -284,10 +284,10 @@ public class DatabaseService {
     /// @see DatabaseCallback
     /// @see Day
     public void createNewDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
-        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
+        writeData("Users/" + userId+ "/days/" + day.getDayId(), day, callback);
     }
     public void updateDay(@NotNull final Day day,@NotNull final String userId, @NotNull final DatabaseCallback<Void> callback) {
-        writeData("Users/" + userId+ "/days/" + day.getId(), day, callback);
+        writeData("Users/" + userId+ "/days/" + day.getDayId(), day, callback);
     }
     public void getDayById(String userId, String dayId, DatabaseCallback<Day> callback) {
         getData("Users/"+ userId + "/days/"+ dayId, Day.class, callback);

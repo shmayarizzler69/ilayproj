@@ -24,11 +24,11 @@ public class Day  implements Serializable {
         this.sumcal = sumcal;
     }
 
-    public String getId() {
+    public String getDayId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setDayId(String id) {
         this.id = id;
     }
 
@@ -56,6 +56,16 @@ public class Day  implements Serializable {
         this.sumcal = sumcal;
     }
 
+    public int calculateTotalCalories() {
+        int total = 0;
+        if (meals != null) {
+            for (Meal meal : meals) {
+                total += meal.getCal();  // Assuming each Meal has a `getCalories()` method
+            }
+        }
+        return total;
+    }
+
 
     public void addMeal(Meal meal) {
         this.meals.add( meal);
@@ -75,3 +85,5 @@ public class Day  implements Serializable {
                 '}';
     }
 }
+
+

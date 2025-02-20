@@ -95,8 +95,7 @@ public class Addfood extends AppCompatActivity {
                         /// generate a new id for the new Day
                         String DayId = databaseService.generateDayId();
                         /// set the id of the Day
-                        day.setId(DayId);
-
+                        day.setDayId(DayId);
                         // Get the current date or pass a specific date
                         day.setDate(new MyDate(getCurrentDate()));
                         day.setSumcal(0);

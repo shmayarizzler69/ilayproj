@@ -8,19 +8,17 @@ public class Meal  implements Serializable {
     private int cal;
     private ArrayList<String> food;
     private String detail;
-// Add this field to link meals to users
-
-
-
+    private String id; // Unique ID for the meal
 
     public Meal() {
         this.food = new ArrayList<>();
     }
 
-    public Meal(int cal, ArrayList<String> food, String detail) {
+    public Meal(int cal, ArrayList<String> food, String detail, String id) {
         this.cal = cal;
         this.food = food;
         this.detail = detail;
+        this.id = id;
     }
 
     public ArrayList<String> getFood() { return food; }
@@ -31,7 +29,13 @@ public class Meal  implements Serializable {
 
     public String getDetail() { return detail; }
     public void setDetail(String detail) { this.detail = detail; }
+    public String getMealId() {
+        return id;
+    }
 
+    public void setMealId(String id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
@@ -39,6 +43,8 @@ public class Meal  implements Serializable {
                 "cal=" + cal +
                 ", food=" + food +
                 ", detail='" + detail + '\'' +
+                ", id='" + id + '\'' +
                 '}';
     }
 }
+
