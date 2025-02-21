@@ -8,7 +8,7 @@ public class Meal  implements Serializable {
     private int cal;
     private ArrayList<String> food;
     private String detail;
-    private String id; // Unique ID for the meal
+    private String id;
 
     public Meal() {
         this.food = new ArrayList<>();
@@ -34,6 +34,14 @@ public class Meal  implements Serializable {
     }
 
     public void setMealId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 

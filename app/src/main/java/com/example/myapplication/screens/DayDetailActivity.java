@@ -31,16 +31,18 @@ public class DayDetailActivity extends AppCompatActivity {
         if (day != null) {
 
 
-            tvDayDetail.setText("Date: " + day.getDate().toString() +
-                            "\nTotal Calories: " + day.getSumcal());
+            tvDayDetail.setText("Date: " + day.getDate().toString() + "\nTotal Calories: " + day.getSumcal());
 
                     StringBuilder mealsDetails = new StringBuilder();
                     for (Meal meal : day.getMeals()) {
-                        mealsDetails.append(meal.getDetail()).append(":\n");
-                        for (String food : meal.getFood()) {
-                            mealsDetails.append("- ").append(food).append("\n");
+
+                        if(meal!=null){
+                            mealsDetails.append(meal.getDetail()).append(":\n");
+                            for (String food : meal.getFood()) {
+                                mealsDetails.append("- ").append(food).append("\n");
+                            }
+                            mealsDetails.append("\n");
                         }
-                        mealsDetails.append("\n");
                     }
 
                     tvMeals.setText(mealsDetails.toString());

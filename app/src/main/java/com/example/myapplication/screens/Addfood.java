@@ -68,8 +68,11 @@ public class Addfood extends AppCompatActivity {
                 databaseService.searchDayByDate(currentMyDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
                     @Override
                     public void onCompleted(@Nullable Day day) {
+                        // Generate a new meal ID and set it in the meal object
+                        String mealId = databaseService.generateMealId();
+                        meal.setMealId(mealId);
+                        meal.setCal(calculateTotalCalories());// Calculate total calories from user input
 
-                        meal.setCal(calculateTotalCalories());  // Calculate total calories from user input
 
                         if(day != null) {
                             day.addMeal(meal);

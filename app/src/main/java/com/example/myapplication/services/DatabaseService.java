@@ -181,6 +181,9 @@ public class DatabaseService {
         writeData("Users/" + user.getId(), user, callback);
     }
 
+    public void createNewMeal(@NotNull final Meal meal,String uid, @NotNull final DatabaseCallback<Void> callback) {
+        writeData("Users/" + uid+"/days", meal, callback);
+    }
 
     /// get a user from the database
     /// @param uid the id of the user to get
