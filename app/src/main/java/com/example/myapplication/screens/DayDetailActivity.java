@@ -36,30 +36,44 @@ public class DayDetailActivity extends AppCompatActivity {
         day = (Day) getIntent().getSerializableExtra("day");
 
         if (day != null) {
+            // Validate meals list
+            if (day.getMeals() == null || day.getMeals().isEmpty()) {
+                Toast.makeText(this, "No meals available for this day.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // Display day details
             tvDayDetail.setText("Date: " + day.getDate().toString() + "\nTotal Calories: " + day.getSumcal());
 
             // Set up the MealAdapter with delete button functionality
             mealAdapter = new MealAdapter(this, day.getMeals(), meal -> {
-                // Remove the meal from the day's meal list
-                day.getMeals().remove(meal);
-                day.setSumcal(day.calculateTotalCalories());
+                if (meal != null) { // Add null check
+                    day.getMeals().remove(meal);
+                    day.setSumcal(day.calculateTotalCalories());
 
-                // Update the day in Firebase
-                String userId = AuthenticationService.getInstance().getCurrentUser().getId(); // Retrieve user ID
-                databaseService.updateDay(day, userId, new DatabaseService.DatabaseCallback<Void>() {
-                    @Override
-                    public void onCompleted(Void result) {
-                        Toast.makeText(DayDetailActivity.this, "Meal deleted successfully!", Toast.LENGTH_SHORT).show();
-                        mealAdapter.notifyDataSetChanged();
-                        tvDayDetail.setText("Date: " + day.getDate().toString() + "\nTotal Calories: " + day.getSumcal());
-                    }
+                    // Update the day in Firebase
+                    String userId = databaseService.getCurrentUserId();
 
-                    @Override
-                    public void onFailed(Exception exception) {
-                        Toast.makeText(DayDetailActivity.this, "Failed to delete meal: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (userId != null) {
+                        databaseService.updateDay(day, userId, new DatabaseService.DatabaseCallback<Void>() {
+                            @Override
+                            public void onCompleted(Void result) {
+                                Toast.makeText(DayDetailActivity.this, "Meal deleted successfully!", Toast.LENGTH_SHORT).show();
+                                mealAdapter.notifyDataSetChanged();
+                                tvDayDetail.setText("Date: " + day.getDate().toString() + "\nTotal Calories: " + day.getSumcal());
+                            }
+
+                            @Override
+                            public void onFailed(Exception exception) {
+                                Toast.makeText(DayDetailActivity.this, "Failed to delete meal: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    Toast.makeText(DayDetailActivity.this, "Meal is null. Cannot delete.", Toast.LENGTH_SHORT).show();
+                }
             });
 
             rvMeals.setLayoutManager(new LinearLayoutManager(this));

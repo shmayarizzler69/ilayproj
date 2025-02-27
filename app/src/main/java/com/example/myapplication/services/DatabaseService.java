@@ -224,6 +224,14 @@ public class DatabaseService {
     public String generateMealId() {
         return generateNewId("meals");
     }
+    public void deleteMealFromFirebase(Meal meal, String userId, DatabaseCallback<Void> callback) {
+        DatabaseReference userMealsRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("meals");
+
+        userMealsRef.child(meal.getId()).removeValue()
+                .addOnSuccessListener(aVoid -> callback.onCompleted(null))
+                .addOnFailureListener(callback::onFailed);
+    }
+
 
     public void searchDayByDate(MyDate myDate, String userId, @NotNull final DatabaseCallback<Day> callback) {
 
