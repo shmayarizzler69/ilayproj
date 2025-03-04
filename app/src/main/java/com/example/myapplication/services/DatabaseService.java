@@ -111,6 +111,16 @@ public class DatabaseService {
     /// @return void
     /// @see DatabaseCallback
     /// @see Class
+    public void updateUserField(@NotNull User user, @NotNull final DatabaseCallback<Void> callback) {
+        // Reference to the specific user's node
+        writeData("Users/" + user.getId()+"/fname", user.getFname(), callback);
+        writeData("Users/" + user.getId()+"/lname", user.getLname(), callback);
+        writeData("Users/" + user.getId()+"/phone", user.getPhone(), callback);
+
+
+
+    }
+
     private <T> void getData(@NotNull final String path, @NotNull final Class<T> clazz, @NotNull final DatabaseCallback<T> callback) {
         readData(path).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
@@ -172,7 +182,8 @@ public class DatabaseService {
         if (auth.getCurrentUser() != null) {
             return auth.getCurrentUser().getUid(); // Get the user ID from Firebase Authentication
         } else {
-            return null; // Return null if no user is logged in
+            return null; // Return null if no user is logged inש
+
         }
     }
 
@@ -183,6 +194,12 @@ public class DatabaseService {
 
     public void createNewMeal(@NotNull final Meal meal,String uid, @NotNull final DatabaseCallback<Void> callback) {
         writeData("Users/" + uid+"/days", meal, callback);
+    }
+    public void updateUser(User user, DatabaseCallback<Void> callback) {
+        // Firebase example
+        databaseReference.child("Users").child(user.getId()).setValue(user)
+                .addOnSuccessListener(aVoid -> callback.onCompleted(null))
+                .addOnFailureListener(callback::onFailed);
     }
 
     /// get a user from the database

@@ -57,7 +57,7 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
         }
         if (v==btninfo){
 
-            Intent goinfo=new Intent(getApplicationContext(), infouser.class);
+            Intent goinfo=new Intent(getApplicationContext(), UpdateUser.class);
             startActivity(goinfo);
         }
     }

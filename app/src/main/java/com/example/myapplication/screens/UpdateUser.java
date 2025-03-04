@@ -1,131 +1,95 @@
 package com.example.myapplication.screens;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
+import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
-import com.example.myapplication.utils.SharedPreferencesUtil;
 
-public class UpdateUserActivity extends AppCompatActivity {
+public class UpdateUser extends AppCompatActivity {
 
-    private static final String TAG = "UpdateUserActivity";
-
-    EditText etFName, etLName, etPhone, etEmail, etPassword;
-    Button btnUpdate;
-    DatabaseService databaseService;
-    User currentUser;
+    private EditText etFirstName, etLastName, etPhone, etEmail;
+    private Button btnUpdateUser;
+    private AuthenticationService authenticationService;
+    private DatabaseService databaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user);
 
-        init_views();
+        // Initialize UI elements
+        etFirstName = findViewById(R.id.editTextFirstName);
+        etLastName = findViewById(R.id.editTextLastName);
+        btnUpdateUser = findViewById(R.id.btnUpdateUser);
 
+        // Initialize services
+        authenticationService = AuthenticationService.getInstance();
         databaseService = DatabaseService.getInstance();
-        currentUser = SharedPreferencesUtil.getUser(this);
 
-        if (currentUser != null) {
-            populateFields();
-        } else {
-            Toast.makeText(this, "Failed to load user data.", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        String currentUserId = authenticationService.getCurrentUserId();
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
+        // Load existing user information
+        loadUserInfo(currentUserId);
+
+        // Update user info button click listener
+        btnUpdateUser.setOnClickListener(v -> updateUserInfo(currentUserId));
+    }
+
+    private void loadUserInfo(String userId) {
+        databaseService.getUser(userId, new DatabaseService.DatabaseCallback<User>() {
             @Override
-            public void onClick(View v) {
-                updateUserDetails();
+            public void onCompleted(User user) {
+                if (user != null) {
+                    etFirstName.setText(user.getFname());
+                    etLastName.setText(user.getLname());
+                    etPhone.setText(user.getPhone());
+                    etEmail.setText(user.getEmail());
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+                Toast.makeText(UpdateUser.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void init_views() {
-        etFName = findViewById(R.id.etFname);
-        etLName = findViewById(R.id.etLname);
-        etPhone = findViewById(R.id.etPhone);
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnUpdate = findViewById(R.id.btnUpdate);
-    }
-
-    private void populateFields() {
-        etFName.setText(currentUser.getFname());
-        etLName.setText(currentUser.getLname());
-        etPhone.setText(currentUser.getPhone());
-        etEmail.setText(currentUser.getEmail());
-        etPassword.setText(currentUser.getPassword());
-    }
-
-    private void updateUserDetails() {
-        String fName = etFName.getText().toString().trim();
-        String lName = etLName.getText().toString().trim();
+    private void updateUserInfo(String userId) {
+        // Validate inputs
+        String firstName = etFirstName.getText().toString().trim();
+        String lastName = etLastName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
 
-        boolean isValid = validateFields(fName, lName, phone, email, password);
-
-        if (isValid) {
-            currentUser.setFname(fName);
-            currentUser.setLname(lName);
-            currentUser.setPhone(phone);
-            currentUser.setEmail(email);
-            currentUser.setPassword(password);
-
-            databaseService.updateUser(currentUser, new DatabaseService.DatabaseCallback<Void>() {
-                @Override
-                public void onCompleted(Void object) {
-                    Toast.makeText(UpdateUserActivity.this, "User updated successfully!", Toast.LENGTH_SHORT).show();
-                    SharedPreferencesUtil.saveUser(UpdateUserActivity.this, currentUser);
-                    finish();
-                }
-
-                @Override
-                public void onFailed(Exception e) {
-                    Log.e(TAG, "Failed to update user: ", e);
-                    Toast.makeText(UpdateUserActivity.this, "Failed to update user. Try again.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private boolean validateFields(String fName, String lName, String phone, String email, String password) {
-        boolean isValid = true;
-
-        if (fName.length() < 2) {
-            etFName.setError("First name too short");
-            isValid = false;
-        }
-        if (lName.length() < 2) {
-            etLName.setError("Last name too short");
-            isValid = false;
-        }
-        if (phone.length() < 9 || phone.length() > 10) {
-            etPhone.setError("Invalid phone number");
-            isValid = false;
-        }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Invalid email");
-            isValid = false;
-        }
-        if (password.length() < 6) {
-            etPassword.setError("Password too short");
-            isValid = false;
-        }
-        if (password.length() > 20) {
-            etPassword.setError("Password too long");
-            isValid = false;
+        if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        return isValid;
+        // Create updated user object
+        User updatedUser = new User(userId, firstName, lastName, phone, email, null);
+
+        // Update user information in Firebase
+        databaseService.updateUserField(updatedUser, new DatabaseService.DatabaseCallback<Void>() {
+            @Override
+            public void onCompleted(Void object) {
+                Toast.makeText(UpdateUser.this, "User info updated successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+                Toast.makeText(UpdateUser.this, "Failed to update user info", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
