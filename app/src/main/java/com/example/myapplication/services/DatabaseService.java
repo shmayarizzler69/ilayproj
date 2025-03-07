@@ -85,15 +85,7 @@ public class DatabaseService {
     /// @param callback the callback to call when the operation is completed
     /// @return void
     /// @see DatabaseCallback
-    private void writeData(@NotNull final String path, @NotNull final Object data, final @NotNull DatabaseCallback<Void> callback) {
-        databaseReference.child(path).setValue(data).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                callback.onCompleted(task.getResult());
-            } else {
-                callback.onFailed(task.getException());
-            }
-        });
-    }
+
 
     /// read data from the database at a specific path
     /// @param path the path to read the data from
@@ -111,13 +103,38 @@ public class DatabaseService {
     /// @return void
     /// @see DatabaseCallback
     /// @see Class
+
+    private void writeData(@NotNull final String path, @NotNull final Object data, final @NotNull DatabaseCallback<Void> callback) {
+        databaseReference.child(path).setValue(data).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                callback.onCompleted(task.getResult());
+            } else {
+                callback.onFailed(task.getException());
+            }
+        });
+    }
+    public void getUsers(@NotNull final DatabaseCallback<List<User>> callback) {
+        getDataList("Users", User.class, callback);
+    }
+    public void deleteUser(@NotNull String userId, @NotNull final DatabaseCallback<Void> callback) {
+        // Path where the user data is stored in Firebase
+        String path = "Users/" + userId;
+
+        // Use the writeData method to remove the user data
+        databaseReference.child(path).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                callback.onCompleted(null); // No data returned, just success
+            } else {
+                callback.onFailed(task.getException()); // Pass the error if any
+            }
+        });
+    }
+
     public void updateUserField(@NotNull User user, @NotNull final DatabaseCallback<Void> callback) {
         // Reference to the specific user's node
         writeData("Users/" + user.getId()+"/fname", user.getFname(), callback);
         writeData("Users/" + user.getId()+"/lname", user.getLname(), callback);
         writeData("Users/" + user.getId()+"/phone", user.getPhone(), callback);
-
-
 
     }
 
@@ -297,9 +314,7 @@ public class DatabaseService {
     /// @see List
     /// @see Day
     /// @see #getData(String, Class, DatabaseCallback)
-    public void getUsers(@NotNull final DatabaseCallback<List<User>> callback) {
-        getDataList("Users", User.class, callback);
-    }
+
 
 
 
