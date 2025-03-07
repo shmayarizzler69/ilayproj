@@ -13,11 +13,12 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".screens.UpdateUser"
+            android:name=".screens.DeleteUserActivity"
             android:exported="false" />
         <activity
-            android:name=".screens.loginfake"
+            android:name=".screens.UpdateUser"
             android:exported="false" />
+
         <activity
             android:name=".screens.DayDetailActivity"
             android:exported="false" />
@@ -36,18 +37,8 @@
         <activity
             android:name=".screens.AfterLoginMain"
             android:exported="false" />
-        <activity
-            android:name=".screens.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".screens.test2"
-            android:exported="false" />
+
         <activity
             android:name=".screens.Addfood"
             android:exported="false" />

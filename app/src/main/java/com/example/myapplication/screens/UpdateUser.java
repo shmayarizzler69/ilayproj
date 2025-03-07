@@ -2,11 +2,13 @@ package com.example.myapplication.screens;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
@@ -16,79 +18,78 @@ import com.example.myapplication.services.DatabaseService;
 
 public class UpdateUser extends AppCompatActivity {
 
-    private EditText etFirstName, etLastName, etPhone, etEmail;
-    private Button btnUpdateUser;
-    private AuthenticationService authenticationService;
+    private EditText editTextFirstName, editTextLastName, editTextPhone;
+    private Button buttonUpdate;
+
     private DatabaseService databaseService;
+    private String userId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user);
 
-        // Initialize UI elements
-        etFirstName = findViewById(R.id.editTextFirstName);
-        etLastName = findViewById(R.id.editTextLastName);
-        btnUpdateUser = findViewById(R.id.btnUpdateUser);
+        // Initialize views
+        editTextFirstName = findViewById(R.id.editTextFirstName);
+        editTextLastName = findViewById(R.id.editTextLastName);
+        editTextPhone = findViewById(R.id.editTextPhone);
+        buttonUpdate = findViewById(R.id.buttonUpdate);
 
-        // Initialize services
-        authenticationService = AuthenticationService.getInstance();
+        // Initialize database service and get current user ID
         databaseService = DatabaseService.getInstance();
+        userId = databaseService.getCurrentUserId();
 
-        String currentUserId = authenticationService.getCurrentUserId();
+        if (userId == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Load existing user information
-        loadUserInfo(currentUserId);
-
-        // Update user info button click listener
-        btnUpdateUser.setOnClickListener(v -> updateUserInfo(currentUserId));
-    }
-
-    private void loadUserInfo(String userId) {
-        databaseService.getUser(userId, new DatabaseService.DatabaseCallback<User>() {
+        // Set onClickListener for the update button
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCompleted(User user) {
-                if (user != null) {
-                    etFirstName.setText(user.getFname());
-                    etLastName.setText(user.getLname());
-                    etPhone.setText(user.getPhone());
-                    etEmail.setText(user.getEmail());
-                }
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                Toast.makeText(UpdateUser.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                updateUser();
             }
         });
     }
 
-    private void updateUserInfo(String userId) {
-        // Validate inputs
-        String firstName = etFirstName.getText().toString().trim();
-        String lastName = etLastName.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
+    private void updateUser() {
+        // Get input values
+        String firstName = editTextFirstName.getText().toString().trim();
+        String lastName = editTextLastName.getText().toString().trim();
+        String phone = editTextPhone.getText().toString().trim();
 
-        if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        // Validate inputs
+        if (TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(phone)) {
+            Toast.makeText(this, "Please enter at least one field to update.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create updated user object
-        User updatedUser = new User(userId, firstName, lastName, phone, email, null);
+        // Create a User object with updated fields
+        User user = new User();
+        user.setId(userId);
+        if (!TextUtils.isEmpty(firstName)) {
+            user.setFname(firstName);
+        }
+        if (!TextUtils.isEmpty(lastName)) {
+            user.setLname(lastName);
+        }
+        if (!TextUtils.isEmpty(phone)) {
+            user.setPhone(phone);
+        }
 
-        // Update user information in Firebase
-        databaseService.updateUserField(updatedUser, new DatabaseService.DatabaseCallback<Void>() {
+        // Perform the update
+        databaseService.updateUserField(user, new DatabaseService.DatabaseCallback<Void>() {
             @Override
             public void onCompleted(Void object) {
-                Toast.makeText(UpdateUser.this, "User info updated successfully", Toast.LENGTH_SHORT).show();
-                finish();
+                Toast.makeText(UpdateUser.this, "User data updated successfully!", Toast.LENGTH_SHORT).show();
+                finish(); // Close the activity
             }
 
             @Override
             public void onFailed(Exception e) {
-                Toast.makeText(UpdateUser.this, "Failed to update user info", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UpdateUser.this, "Failed to update user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

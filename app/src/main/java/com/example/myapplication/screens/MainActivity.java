@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v==btntest){
 
-            Intent goReg=new Intent(getApplicationContext(), test2.class);
+            Intent goReg=new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(goReg);
         }
         if (v==btnLogin){
