@@ -12,10 +12,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
+import com.example.myapplication.services.AuthenticationService;
 import com.google.firebase.auth.UserInfo;
 
 public class AfterLoginMain extends AppCompatActivity implements View.OnClickListener {
-    Button btnAbout,btntest,btninfo,btnUpdate;
+    Button btnAbout,btntest,btninfo,btnUpdate,btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
         btnAbout.setOnClickListener(this);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(this);
+        btnLogout=findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(this);
     }
 
     @Override
@@ -65,6 +68,12 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
         if (v==btnUpdate){
             Intent update=new Intent(getApplicationContext(), UpdateUser.class);
             startActivity(update);
+        }
+        if (v==btnLogout){
+
+            AuthenticationService.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         }
     }
 }

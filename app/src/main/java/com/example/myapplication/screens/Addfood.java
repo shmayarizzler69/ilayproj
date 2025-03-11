@@ -10,36 +10,34 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import com.example.myapplication.R;
 import com.example.myapplication.models.MyDate;
 import com.example.myapplication.models.Day;
 import com.example.myapplication.models.Meal;
+import com.example.myapplication.services.AuthenticationService;
+import com.example.myapplication.services.DatabaseService;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import com.example.myapplication.services.AuthenticationService;
-import com.example.myapplication.services.DatabaseService;
-public class Addfood extends AppCompatActivity {
 
-//https://heli-group.co.il/%d7%9e%d7%97%d7%a9%d7%91%d7%95%d7%a0%d7%99%d7%9d/
-//    מחשבון לחישוב קלוריות אוטומטי
+public class Addfood extends AppCompatActivity implements View.OnClickListener {
+
     private static final String TAG = "AddFood";
     private LinearLayout container;
     private Meal meal;
     private TextView foodListTextView;
     private HashMap<Integer, String> foodInputs;
-
-    AuthenticationService authenticationService;
-    DatabaseService databaseService;
+    private Button btnBack;
+    private AuthenticationService authenticationService;
+    private DatabaseService databaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +53,12 @@ public class Addfood extends AppCompatActivity {
         databaseService = DatabaseService.getInstance();
 
         String currentUserId = authenticationService.getCurrentUserId();
-
         MyDate currentMyDate = new MyDate(getCurrentDate());
 
-        // Initialize Firebase database reference
+        btnBack = findViewById(R.id.btnback);
+        btnBack.setOnClickListener(this); // Fix applied here
 
         Button submitButton = findViewById(R.id.submitButton);
-
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,49 +68,43 @@ public class Addfood extends AppCompatActivity {
                         // Generate a new meal ID and set it in the meal object
                         String mealId = databaseService.generateMealId();
                         meal.setMealId(mealId);
-                        meal.setCal(calculateTotalCalories());// Calculate total calories from user input
+                        meal.setCal(calculateTotalCalories()); // Calculate total calories from user input
 
-
-                        if(day != null) {
+                        if (day != null) {
                             day.addMeal(meal);
 
                             databaseService.updateDay(day, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
                                 @Override
                                 public void onCompleted(Void object) {
-                                    Log.d(TAG, "Day updated updated");
+                                    Log.d(TAG, "Day updated");
                                     Toast.makeText(Addfood.this, "Day updated successfully", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
 
                                 @Override
                                 public void onFailed(Exception e) {
-
+                                    // Handle failure here
                                 }
                             });
                             return;
                         }
 
-                        day=new Day();
+                        day = new Day();
 
-                        /// generate a new id for the new Day
-                        String DayId = databaseService.generateDayId();
-                        /// set the id of the Day
-                        day.setDayId(DayId);
-                        // Get the current date or pass a specific date
+                        // Generate a new id for the new Day
+                        String dayId = databaseService.generateDayId();
+                        day.setDayId(dayId);
                         day.setDate(new MyDate(getCurrentDate()));
                         day.setSumcal(0);
                         day.addMeal(meal);
 
-
-                        /// save the Day to the database and get the result in the callback
+                        // Save the Day to the database and get the result in the callback
                         databaseService.createNewDay(day, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
                             @Override
                             public void onCompleted(Void object) {
                                 Log.d(TAG, "Day created successfully");
-
                                 Toast.makeText(Addfood.this, "Day created successfully", Toast.LENGTH_SHORT).show();
                                 finish();
-
                             }
 
                             @Override
@@ -126,7 +117,7 @@ public class Addfood extends AppCompatActivity {
 
                     @Override
                     public void onFailed(Exception e) {
-
+                        // Handle failure here
                     }
                 });
             }
@@ -192,7 +183,14 @@ public class Addfood extends AppCompatActivity {
         });
     }
 
-    // Adds a new row with two EditTexts
+    @Override
+    public void onClick(View v) {
+        if (v == btnBack) {
+            Intent goback = new Intent(getApplicationContext(), AfterLoginMain.class);
+            startActivity(goback);
+        }
+    }
+
     private void addNewRowWithTwoEditTexts() {
         LinearLayout newRow = new LinearLayout(this);
         newRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -263,7 +261,6 @@ public class Addfood extends AppCompatActivity {
         container.addView(newRow);
     }
 
-    // Removes the last row from the container
     private void removeLastRow() {
         int rowCount = container.getChildCount();
         if (rowCount > 0) {
@@ -280,7 +277,6 @@ public class Addfood extends AppCompatActivity {
         }
     }
 
-    // Prints the contents of the Meal.food ArrayList
     private void printFoodList() {
         StringBuilder foodList = new StringBuilder("Food List:\n");
 
@@ -306,7 +302,6 @@ public class Addfood extends AppCompatActivity {
         foodListTextView.setText(foodList.toString());
     }
 
-
     private Date getCurrentDate() {
         return new Date();
     }
@@ -324,13 +319,11 @@ public class Addfood extends AppCompatActivity {
                 String caloriesText = caloriesEditText.getText().toString().trim();
 
                 if (!caloriesText.isEmpty()) {
-                    totalCalories += Integer.parseInt(caloriesText);  // Add the calories to the total
+                    totalCalories += Integer.parseInt(caloriesText); // Add the calories to the total
                 }
             }
         }
 
         return totalCalories;
     }
-
-
 }

@@ -16,7 +16,20 @@
 
         <!-- Spinner for selecting meal type -->
 
-        <!-- Container for dynamically adding rows -->
+        <TextView
+            android:id="@+id/tvGoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="24dp"
+            android:text="הוסף ארוחה"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <Spinner
             android:id="@+id/mealTypeSpinner"
             android:layout_width="match_parent"
@@ -69,6 +82,14 @@
             android:text="Submit Meal"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/btnback"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:text="חזור" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

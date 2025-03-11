@@ -1,9 +1,8 @@
 package com.example.myapplication.screens;
 
-import static com.example.myapplication.R.id.recyclerViewDays;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +30,7 @@ public class DaysListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_days_list); // Your layout file
 
-        recyclerView = findViewById(recyclerViewDays);
+        recyclerView = findViewById(R.id.recyclerViewDays);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dayList = new ArrayList<>();
         adapter = new DaysAdapter(dayList, day -> {
@@ -40,8 +39,6 @@ public class DaysListActivity extends AppCompatActivity {
             intent.putExtra("day", day);
             startActivity(intent);
         });
-
-
 
         databaseService = DatabaseService.getInstance();
 
@@ -55,7 +52,6 @@ public class DaysListActivity extends AppCompatActivity {
                 // Sort the list by date
                 Collections.sort(dayList, (d1, d2) -> d2.getDate().compareTo(d1.getDate()));
 
-
                 recyclerView.setAdapter(adapter);
             }
 
@@ -63,9 +59,15 @@ public class DaysListActivity extends AppCompatActivity {
             public void onFailed(Exception e) {
                 Toast.makeText(DaysListActivity.this, "Failed to load days", Toast.LENGTH_SHORT).show();
             }
+        });
 
-
-
+        // Set the OnClickListener for the return button
+        Button returnButton = findViewById(R.id.returnButton);
+        returnButton.setOnClickListener(v -> {
+            // Start the AfterLoginMain activity and finish the current activity
+            Intent intent = new Intent(DaysListActivity.this, AfterLoginMain.class);
+            startActivity(intent);
+            finish(); // Optional: finish this activity to remove it from the back stack
         });
     }
 }

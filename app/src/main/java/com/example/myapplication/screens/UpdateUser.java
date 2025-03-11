@@ -1,5 +1,6 @@
 package com.example.myapplication.screens;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.example.myapplication.services.DatabaseService;
 public class UpdateUser extends AppCompatActivity {
 
     private EditText editTextFirstName, editTextLastName, editTextPhone;
-    private Button buttonUpdate;
+    private Button buttonUpdate, buttonReturn;
 
     private DatabaseService databaseService;
     private String userId;
@@ -34,6 +35,7 @@ public class UpdateUser extends AppCompatActivity {
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextPhone = findViewById(R.id.editTextPhone);
         buttonUpdate = findViewById(R.id.buttonUpdate);
+        buttonReturn = findViewById(R.id.buttonReturn);
 
         // Initialize database service and get current user ID
         databaseService = DatabaseService.getInstance();
@@ -50,6 +52,17 @@ public class UpdateUser extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateUser();
+            }
+        });
+
+        // Set onClickListener for the return button
+        buttonReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Go back to AfterLoginMain activity
+                Intent intent = new Intent(UpdateUser.this, AfterLoginMain.class);
+                startActivity(intent);
+                finish(); // Optional: finish this activity to remove it from the back stack
             }
         });
     }
@@ -84,7 +97,7 @@ public class UpdateUser extends AppCompatActivity {
             @Override
             public void onCompleted(Void object) {
                 Toast.makeText(UpdateUser.this, "User data updated successfully!", Toast.LENGTH_SHORT).show();
-                finish(); // Close the activity
+                finish(); // Close the activity after update
             }
 
             @Override
