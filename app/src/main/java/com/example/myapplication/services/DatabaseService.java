@@ -149,6 +149,29 @@ public class DatabaseService {
             callback.onCompleted(data);
         });
     }
+    private void deleteData(@NotNull final String path, @Nullable final DatabaseCallback<Void> callback) {
+        databaseReference.child(path).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (callback == null) return;
+                callback.onCompleted(null);
+            } else {
+                if (callback == null) return;
+                callback.onFailed(task.getException());
+            }
+        });
+    }
+    public void deleteDay(final String dayid, @NotNull final DatabaseCallback<Void> callback) {
+        deleteData("Users/" +getCurrentUserId()+"/days/"+ dayid, callback);
+    }
+    public void deleteMeal(final Meal meal, @NotNull final DatabaseCallback<Void> callback) {
+      deleteData("Users/" +getCurrentUserId()+"/meals/"+meal.getMealId(), callback);
+    }
+    public void deleteMealFromFirebase(Meal meal, String userId, DatabaseCallback<Void> callback) {
+        DatabaseReference userMealsRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("meals");
+        userMealsRef.child(meal.getId()).removeValue()
+                .addOnSuccessListener(aVoid -> callback.onCompleted(null))
+                .addOnFailureListener(callback::onFailed);
+    }
 
     /// get a list of data from the database at a specific path
     /// @param path the path to get the data from
@@ -258,13 +281,7 @@ public class DatabaseService {
     public String generateMealId() {
         return generateNewId("meals");
     }
-    public void deleteMealFromFirebase(Meal meal, String userId, DatabaseCallback<Void> callback) {
-        DatabaseReference userMealsRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("meals");
 
-        userMealsRef.child(meal.getId()).removeValue()
-                .addOnSuccessListener(aVoid -> callback.onCompleted(null))
-                .addOnFailureListener(callback::onFailed);
-    }
 
 
     public void searchDayByDate(MyDate myDate, String userId, @NotNull final DatabaseCallback<Day> callback) {

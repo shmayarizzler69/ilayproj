@@ -21,6 +21,8 @@ public class infouser extends AppCompatActivity {
         TextView tvEmail = findViewById(R.id.tvEmail);
         TextView tvPhone = findViewById(R.id.tvPhone);
         TextView tvDisplayName = findViewById(R.id.tvDisplayName);
+        TextView tvLastName = findViewById(R.id.tvLastName);
+        TextView tvUserId = findViewById(R.id.tvUserId);
         Button btnBack = findViewById(R.id.btnBack);
 
         // קבלת המשתמש המחובר
@@ -31,6 +33,8 @@ public class infouser extends AppCompatActivity {
             tvEmail.setText("Email: " + user.getEmail());
             tvPhone.setText("Phone: " + (user.getPhone() != null ? user.getPhone() : "N/A"));
             tvDisplayName.setText("Name: " + (user.getFname() != null ? user.getFname() : "N/A"));
+            tvLastName.setText("Last Name: " + (user.getLname() != null ? user.getLname() : "N/A"));
+            tvUserId.setText("User ID: " + user.getId());
         } else {
             tvEmail.setText("User not logged in");
         }

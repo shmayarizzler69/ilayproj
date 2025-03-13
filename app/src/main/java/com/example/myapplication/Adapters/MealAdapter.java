@@ -54,21 +54,18 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
             foodList.append("- ").append(food).append("\n");
         }
         holder.tvFoods.setText(foodList.toString());
-
-        // Set up the delete button functionality
         holder.btnDelete.setOnClickListener(v -> {
             if (deleteMealListener != null) {
                 // Notify listener for meal deletion
                 deleteMealListener.onDeleteMeal(meal);
 
-                // After deletion, update Firebase
-                String userId = "your_user_id"; // Replace this with the actual user ID logic
-                databaseService.deleteMealFromFirebase(meal, userId, new DatabaseService.DatabaseCallback<Void>() {
+                // Use the new deleteMeal method
+                databaseService.deleteMeal(meal, new DatabaseService.DatabaseCallback<Void>() {
                     @Override
                     public void onCompleted(Void result) {
-                        // Successfully deleted the meal from Firebase
                         meals.remove(meal);  // Remove the meal from the list
                         notifyDataSetChanged();  // Notify the adapter to refresh the view
+
                     }
 
                     @Override

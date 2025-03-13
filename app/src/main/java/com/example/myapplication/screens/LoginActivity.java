@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // Admin credentials
     private final String ADMIN_EMAIL = "admin@gmail.com";
-    private final String ADMIN_PASSWORD = "123456";
+    private final String ADMIN_PASSWORD = "admin123";
 
     public static boolean isAdmin = false;
 

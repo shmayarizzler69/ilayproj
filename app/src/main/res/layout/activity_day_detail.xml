@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F8E1B7"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,10 +13,21 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="16dp" />
+    <Button
+        android:id="@+id/btnDeleteDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Day"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMeals"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
 </LinearLayout>
 

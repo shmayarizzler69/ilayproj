@@ -1,6 +1,7 @@
-package com.example.myapplication.models;
 
+package com.example.myapplication.models;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -18,14 +19,25 @@ public class MyDate implements Serializable {
     }
 
     public MyDate(Date currentDate) {
-        this.day = currentDate.getDay();
-        this.month = currentDate.getMonth();
-        this.year = currentDate.getYear();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        this.day = calendar.get(Calendar.DAY_OF_MONTH);
+        this.month = calendar.get(Calendar.MONTH) + 1; // 0=ינואר ו11=דצמבר
+        this.year = calendar.get(Calendar.YEAR);
     }
 
 
     public Date asDate() {
-        return new Date(year, month, day);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, this.year);
+        calendar.set(Calendar.MONTH, this.month - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, this.day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     public int getDay() {
@@ -54,11 +66,8 @@ public class MyDate implements Serializable {
 
     @Override
     public String toString() {
-        return "MyDate{" +
-                "day=" + day +
-                ", month=" + month +
-                ", year=" + year +
-                '}';
+        return year+"/"+month+"/"+day;
+
     }
 
     @Override
