@@ -23,18 +23,20 @@ public class infouser extends AppCompatActivity {
         TextView tvDisplayName = findViewById(R.id.tvDisplayName);
         TextView tvLastName = findViewById(R.id.tvLastName);
         TextView tvUserId = findViewById(R.id.tvUserId);
+        TextView tvDailyCal = findViewById(R.id.tvDailyCal); // New TextView for daily calorie limit
         Button btnBack = findViewById(R.id.btnBack);
 
-        // קבלת המשתמש המחובר
+        // Retrieve the logged-in user
         User user = SharedPreferencesUtil.getUser(getApplicationContext());
 
         if (user != null) {
-            // הצגת פרטי המשתמש
+            // Display user details
             tvEmail.setText("Email: " + user.getEmail());
             tvPhone.setText("Phone: " + (user.getPhone() != null ? user.getPhone() : "N/A"));
             tvDisplayName.setText("Name: " + (user.getFname() != null ? user.getFname() : "N/A"));
             tvLastName.setText("Last Name: " + (user.getLname() != null ? user.getLname() : "N/A"));
             tvUserId.setText("User ID: " + user.getId());
+            tvDailyCal.setText("Daily Calorie Limit: " + (user.getDailycal() != null ? user.getDailycal() : "N/A"));
         } else {
             tvEmail.setText("User not logged in");
         }

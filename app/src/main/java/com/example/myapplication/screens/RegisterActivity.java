@@ -1,4 +1,5 @@
 package com.example.myapplication.screens;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -6,12 +7,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.widget.Spinner;
+
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.AuthenticationService;
@@ -19,22 +21,18 @@ import com.example.myapplication.services.DatabaseService;
 import com.example.myapplication.utils.SharedPreferencesUtil;
 
 /// Activity for registering the user
-/// This activity is used to register the user
-/// It contains fields for the user to enter their information
-/// It also contains a button to register the user
-/// When the user is registered, they are redirected to the main activity
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "RegisterActivity";
 
-    EditText etFName, etLName, etPhone, etEmail, etPass;
+    EditText etFName, etLName, etPhone, etEmail, etPass, etDailyCal;
     Button btnReg;
 
     String fName, lName, phone, email, pass;
+    int dailyCal;
 
     AuthenticationService authenticationService;
     DatabaseService databaseService;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +48,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         authenticationService = AuthenticationService.getInstance();
         databaseService = DatabaseService.getInstance();
-
     }
 
     private void init_views() {
@@ -60,22 +57,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPhone = findViewById(R.id.etPhone);
         etEmail = findViewById(R.id.etEmail);
         etPass = findViewById(R.id.etPassword);
-
+        etDailyCal = findViewById(R.id.etDailyCal); // New EditText for daily calorie goal
     }
 
+    @Override
     public void onClick(View v) {
         fName = etFName.getText().toString();
         lName = etLName.getText().toString();
         phone = etPhone.getText().toString();
         email = etEmail.getText().toString();
         pass = etPass.getText().toString();
+        String dailyCalInput = etDailyCal.getText().toString();
 
-        //check if registration is valid
+        // Check if registration is valid
         Boolean isValid = true;
+
         if (fName.length() < 2) {
-
             etFName.setError("שם פרטי קצר מדי");
-
             isValid = false;
         }
         if (lName.length() < 2) {
@@ -86,7 +84,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(RegisterActivity.this, "מספר הטלפון לא תקין", Toast.LENGTH_LONG).show();
             isValid = false;
         }
-
         if (!email.contains("@")) {
             Toast.makeText(RegisterActivity.this, "כתובת האימייל לא תקינה", Toast.LENGTH_LONG).show();
             isValid = false;
@@ -100,14 +97,30 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             isValid = false;
         }
 
+        // Validation for daily calorie goal
+        if (dailyCalInput.isEmpty()) {
+            etDailyCal.setError("אנא הכנס יעד קלוריות יומי");
+            isValid = false;
+        } else {
+            try {
+                dailyCal = Integer.parseInt(dailyCalInput);
+                if (dailyCal < 1000) {
+                    etDailyCal.setError("יעד קלוריות יומי חייב להיות לפחות 1000");
+                    isValid = false;
+                }
+            } catch (NumberFormatException e) {
+                etDailyCal.setError("יעד קלוריות יומי חייב להיות מספר תקין");
+                isValid = false;
+            }
+        }
 
-        if(isValid) {
+        if (isValid) {
             authenticationService.signUp(email, pass, new AuthenticationService.AuthCallback<String>() {
                 @Override
                 public void onCompleted(String uid) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail A:success");
-                    User newUser = new User(uid, fName, lName, phone, email, pass);
+                    User newUser = new User(uid, fName, lName, phone, email, pass, String.valueOf(dailyCal)); // Pass daily calorie goal
                     Log.w(TAG, newUser.toString());
 
                     databaseService.createNewUser(newUser, new DatabaseService.DatabaseCallback<Void>() {
@@ -139,9 +152,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toast.LENGTH_SHORT).show();
                 }
             });
-
-
         }
     }
-
 }

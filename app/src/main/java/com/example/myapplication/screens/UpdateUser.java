@@ -8,18 +8,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
-import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 
 public class UpdateUser extends AppCompatActivity {
 
-    private EditText editTextFirstName, editTextLastName, editTextPhone;
+    private EditText editTextFirstName, editTextLastName, editTextPhone, editTextDailyCal;
     private Button buttonUpdate, buttonReturn;
 
     private DatabaseService databaseService;
@@ -34,6 +32,7 @@ public class UpdateUser extends AppCompatActivity {
         editTextFirstName = findViewById(R.id.editTextFirstName);
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextPhone = findViewById(R.id.editTextPhone);
+        editTextDailyCal = findViewById(R.id.editTextDailyCal); // New EditText for daily calorie limit
         buttonUpdate = findViewById(R.id.buttonUpdate);
         buttonReturn = findViewById(R.id.buttonReturn);
 
@@ -72,11 +71,26 @@ public class UpdateUser extends AppCompatActivity {
         String firstName = editTextFirstName.getText().toString().trim();
         String lastName = editTextLastName.getText().toString().trim();
         String phone = editTextPhone.getText().toString().trim();
+        String dailyCalInput = editTextDailyCal.getText().toString().trim();
 
         // Validate inputs
-        if (TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(phone)) {
+        if (TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(phone) && TextUtils.isEmpty(dailyCalInput)) {
             Toast.makeText(this, "Please enter at least one field to update.", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        Integer dailyCal = null;
+        if (!TextUtils.isEmpty(dailyCalInput)) {
+            try {
+                dailyCal = Integer.parseInt(dailyCalInput);
+                if (dailyCal < 1000) {
+                    Toast.makeText(this, "Daily calorie limit must be at least 1000.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Invalid calorie limit. Please enter a number.", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         // Create a User object with updated fields
@@ -90,6 +104,9 @@ public class UpdateUser extends AppCompatActivity {
         }
         if (!TextUtils.isEmpty(phone)) {
             user.setPhone(phone);
+        }
+        if (dailyCal != null) {
+            user.setDailycal(String.valueOf(dailyCal));
         }
 
         // Perform the update

@@ -83,6 +83,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLastName" />
+    <TextView
+        android:id="@+id/tvDailyCal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:text="Daily Calorie Limit: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvUserId"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+  
 
     <Button
         android:id="@+id/btnBack"

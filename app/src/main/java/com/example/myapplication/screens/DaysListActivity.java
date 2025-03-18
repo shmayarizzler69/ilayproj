@@ -28,7 +28,7 @@ public class DaysListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_days_list); // Your layout file
+        setContentView(R.layout.activity_days_list);
 
         recyclerView = findViewById(R.id.recyclerViewDays);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -42,32 +42,49 @@ public class DaysListActivity extends AppCompatActivity {
 
         databaseService = DatabaseService.getInstance();
 
-        String currentUserId = AuthenticationService.getInstance().getCurrentUserId();
-
-        databaseService.getAllDays(currentUserId, new DatabaseService.DatabaseCallback<List<Day>>() {
-            @Override
-            public void onCompleted(List<Day> days) {
-                dayList.clear();
-                dayList.addAll(days);
-                // Sort the list by date
-                Collections.sort(dayList, (d1, d2) -> d2.getDate().compareTo(d1.getDate()));
-
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                Toast.makeText(DaysListActivity.this, "Failed to load days", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         // Set the OnClickListener for the return button
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(v -> {
-            // Start the AfterLoginMain activity and finish the current activity
             Intent intent = new Intent(DaysListActivity.this, AfterLoginMain.class);
             startActivity(intent);
-            finish(); // Optional: finish this activity to remove it from the back stack
+            finish();
         });
+
+        // Initial data load
+        loadDays();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload data when returning to this activity
+        loadDays();
+    }
+
+    private void loadDays() {
+        String currentUserId = AuthenticationService.getInstance().getCurrentUserId();
+
+        if (currentUserId != null) {
+            databaseService.getAllDays(currentUserId, new DatabaseService.DatabaseCallback<List<Day>>() {
+                @Override
+                public void onCompleted(List<Day> days) {
+                    dayList.clear();
+                    dayList.addAll(days);
+                    // Sort the list by date
+                    Collections.sort(dayList, (d1, d2) -> d2.getDate().compareTo(d1.getDate()));
+
+                    // Notify the adapter of data changes
+                    adapter.notifyDataSetChanged();
+                    recyclerView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    Toast.makeText(DaysListActivity.this, "Failed to load days", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

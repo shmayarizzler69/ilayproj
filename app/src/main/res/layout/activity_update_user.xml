@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8E1B7"
-
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -13,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="24dp"
-        android:text="מסך בית                        "
+        android:text="מסך בית"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -41,6 +39,14 @@
         android:inputType="phone"
         android:layout_marginTop="8dp" />
 
+    <EditText
+        android:id="@+id/editTextDailyCal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Daily Calorie Limit"
+        android:inputType="number"
+        android:layout_marginTop="8dp" />
+
     <Button
         android:id="@+id/buttonUpdate"
         android:layout_width="match_parent"
@@ -54,5 +60,4 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="חזור" />
-
 </LinearLayout>

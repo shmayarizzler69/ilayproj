@@ -2,20 +2,30 @@ package com.example.myapplication.models;
 
 import java.io.Serializable;
 
-public class User  implements Serializable {
-    String id, fname, lname, phone,email, password;
-
+public class User implements Serializable {
+    String id, fname, lname, phone, email, password, dailycal;
 
     public User() {
     }
 
-    public User(String id, String fname, String lname, String phone, String email, String password) {
+    public User(String id, String fname, String lname, String phone, String email, String password, String dailycal) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
         this.phone = phone;
         this.email = email;
         this.password = password;
+        this.dailycal = dailycal;
+    }
+
+    public User(User user) {
+        this.id = user.id;
+        this.fname = user.fname;
+        this.lname = user.lname;
+        this.phone = user.phone;
+        this.email = user.email;
+        this.password = user.password;
+        this.dailycal = user.dailycal;
     }
 
     public String getId() {
@@ -66,6 +76,14 @@ public class User  implements Serializable {
         this.password = password;
     }
 
+    public String getDailycal() {
+        return dailycal;
+    }
+
+    public void setDailycal(String dailycal) {
+        this.dailycal = dailycal;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -75,6 +93,7 @@ public class User  implements Serializable {
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", dailycal='" + dailycal + '\'' +
                 '}';
     }
 }
