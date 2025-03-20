@@ -19,7 +19,6 @@ public class UpdateUser extends AppCompatActivity {
 
     private EditText editTextFirstName, editTextLastName, editTextPhone, editTextDailyCal;
     private Button buttonUpdate, buttonReturn;
-
     private DatabaseService databaseService;
     private String userId;
 
@@ -32,7 +31,7 @@ public class UpdateUser extends AppCompatActivity {
         editTextFirstName = findViewById(R.id.editTextFirstName);
         editTextLastName = findViewById(R.id.editTextLastName);
         editTextPhone = findViewById(R.id.editTextPhone);
-        editTextDailyCal = findViewById(R.id.editTextDailyCal); // New EditText for daily calorie limit
+        editTextDailyCal = findViewById(R.id.editTextDailyCal);
         buttonUpdate = findViewById(R.id.buttonUpdate);
         buttonReturn = findViewById(R.id.buttonReturn);
 
@@ -45,6 +44,9 @@ public class UpdateUser extends AppCompatActivity {
             finish();
             return;
         }
+
+        // Load user details and set them into the EditText fields
+        loadUserDetails();
 
         // Set onClickListener for the update button
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +68,28 @@ public class UpdateUser extends AppCompatActivity {
         });
     }
 
+    private void loadUserDetails() {
+        databaseService.getUser(userId, new DatabaseService.DatabaseCallback<User>() {
+            @Override
+            public void onCompleted(User user) {
+                if (user != null) {
+                    // Set user details into the EditText fields
+                    editTextFirstName.setText(user.getFname());
+                    editTextLastName.setText(user.getLname());
+                    editTextPhone.setText(user.getPhone());
+                    editTextDailyCal.setText(user.getDailycal());
+                } else {
+                    Toast.makeText(UpdateUser.this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+                Toast.makeText(UpdateUser.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void updateUser() {
         // Get input values
         String firstName = editTextFirstName.getText().toString().trim();
@@ -83,8 +107,8 @@ public class UpdateUser extends AppCompatActivity {
         if (!TextUtils.isEmpty(dailyCalInput)) {
             try {
                 dailyCal = Integer.parseInt(dailyCalInput);
-                if (dailyCal < 1000) {
-                    Toast.makeText(this, "Daily calorie limit must be at least 1000.", Toast.LENGTH_SHORT).show();
+                if (dailyCal < 1000 || dailyCal > 10000) {
+                    Toast.makeText(this, "יעד קלוריות יומי חייב להיות הגיוני", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } catch (NumberFormatException e) {
