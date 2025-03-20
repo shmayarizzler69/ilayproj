@@ -1,5 +1,6 @@
 package com.example.myapplication.Adapters;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
+import com.example.myapplication.screens.UserDetailsActivity;
+
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private List<User> userList;
     private OnDeleteClickListener onDeleteClickListener;
+    private Context context;
 
     // Interface to handle delete button clicks
     public interface OnDeleteClickListener {
         void onDeleteClick(String userId);
     }
 
-    public UserAdapter(List<User> userList, OnDeleteClickListener onDeleteClickListener) {
+    public UserAdapter(Context context, List<User> userList, OnDeleteClickListener onDeleteClickListener) {
+        this.context = context;
         this.userList = userList;
         this.onDeleteClickListener = onDeleteClickListener;
     }
@@ -48,6 +53,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             if (onDeleteClickListener != null) {
                 onDeleteClickListener.onDeleteClick(user.getId());
             }
+        });
+
+        // Set up item click listener to open user details activity
+        holder.itemView.setOnClickListener(v -> {
+            // Navigate to the new activity with the user details
+            Intent intent = new Intent(context, UserDetailsActivity.class);
+            intent.putExtra("user", user);  // Pass the user object
+            context.startActivity(intent);
         });
     }
 

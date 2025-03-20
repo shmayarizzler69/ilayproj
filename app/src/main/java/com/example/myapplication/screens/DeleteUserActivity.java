@@ -25,6 +25,7 @@ public class DeleteUserActivity extends AppCompatActivity {
     private UserAdapter userAdapter;
     private List<User> userList;
     private DatabaseReference databaseReference;
+    ValueEventListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class DeleteUserActivity extends AppCompatActivity {
         // Initialize the RecyclerView and List
         recyclerView = findViewById(R.id.recyclerView);
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(userList, this::deleteUser);  // Pass the delete function
+        userAdapter = new UserAdapter(this, userList, userId -> deleteUser(userId)); // Use a lambda
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(userAdapter);
@@ -47,7 +48,7 @@ public class DeleteUserActivity extends AppCompatActivity {
     }
 
     private void fetchUsers() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        listener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Clear previous data
@@ -82,5 +83,11 @@ public class DeleteUserActivity extends AppCompatActivity {
                 Toast.makeText(DeleteUserActivity.this, "Failed to delete user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        databaseReference.removeEventListener(listener);
+        super.onDestroy();
     }
 }
