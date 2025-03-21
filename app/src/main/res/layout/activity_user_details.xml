@@ -1,60 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<!-- activity_user_details.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- User ID Text -->
+    <!-- Other TextViews -->
     <TextView
         android:id="@+id/userIdTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="User ID"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
-
-    <!-- User Name Text -->
-    <TextView
-        android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Name"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="wrap_content"/>
 
-    <!-- User Phone Text -->
-    <TextView
-        android:id="@+id/userPhoneTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Phone"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+    <EditText
+        android:id="@+id/userFnameEditText"
+        android:hint="First Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <!-- User Email Text -->
-    <TextView
-        android:id="@+id/userEmailTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+    <EditText
+        android:id="@+id/userLnameEditText"
+        android:hint="Last Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <!-- User Daily Calories Text -->
-    <TextView
-        android:id="@+id/userDailycalTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Daily Calories"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+    <EditText
+        android:id="@+id/userPhoneEditText"
+        android:hint="Phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/userEmailEditText"
+        android:hint="Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/userDailycalEditText"
+        android:hint="Daily Calories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/saveChangesButton"
+        android:text="Save Changes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/deleteUserButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Delete User"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/white" />
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/backToDeleteUserActivityButton"
+        android:text="Back to Users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_marginTop="16dp"/>
 </LinearLayout>

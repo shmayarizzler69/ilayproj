@@ -17,14 +17,14 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/editTextFirstName"
+        android:id="@+id/ETFName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="First Name"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editTextLastName"
+        android:id="@+id/ETLName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Last Name"
@@ -32,7 +32,7 @@
         android:layout_marginTop="8dp" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/etPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone"
@@ -40,7 +40,7 @@
         android:layout_marginTop="8dp" />
 
     <EditText
-        android:id="@+id/editTextDailyCal"
+        android:id="@+id/etDC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Daily Calorie Limit"
@@ -48,14 +48,14 @@
         android:layout_marginTop="8dp" />
 
     <Button
-        android:id="@+id/buttonUpdate"
+        android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Update"
         android:layout_marginTop="16dp" />
 
     <Button
-        android:id="@+id/buttonReturn"
+        android:id="@+id/btnReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background=" #E4C06A"
+    android:background="@drawable/outline_background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="User ID"
+        android:fontFamily=""
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
@@ -24,11 +25,5 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
-    <!-- Delete Button -->
-    <Button
-        android:id="@+id/deleteUserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:layout_marginTop="8dp" />
+
 </LinearLayout>

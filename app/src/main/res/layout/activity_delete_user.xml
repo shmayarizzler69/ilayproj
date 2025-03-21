@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8E1B7"
-
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -17,6 +15,15 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="16dp" />
+
+    <!-- Search Bar -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="חפש לפי שם פרטי או מזהה"
+        android:iconifiedByDefault="false"
+        android:layout_marginBottom="8dp" />
 
     <!-- RecyclerView to display the list of users -->
     <androidx.recyclerview.widget.RecyclerView

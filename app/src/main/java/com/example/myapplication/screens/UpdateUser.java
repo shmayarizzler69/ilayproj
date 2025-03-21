@@ -17,7 +17,7 @@ import com.example.myapplication.services.DatabaseService;
 
 public class UpdateUser extends AppCompatActivity {
 
-    private EditText editTextFirstName, editTextLastName, editTextPhone, editTextDailyCal;
+    private EditText FName, LName, Phone, DC;
     private Button buttonUpdate, buttonReturn;
     private DatabaseService databaseService;
     private String userId;
@@ -28,12 +28,12 @@ public class UpdateUser extends AppCompatActivity {
         setContentView(R.layout.activity_update_user);
 
         // Initialize views
-        editTextFirstName = findViewById(R.id.editTextFirstName);
-        editTextLastName = findViewById(R.id.editTextLastName);
-        editTextPhone = findViewById(R.id.editTextPhone);
-        editTextDailyCal = findViewById(R.id.editTextDailyCal);
-        buttonUpdate = findViewById(R.id.buttonUpdate);
-        buttonReturn = findViewById(R.id.buttonReturn);
+        FName = findViewById(R.id.ETFName);
+        LName = findViewById(R.id.ETLName);
+        Phone = findViewById(R.id.etPhone);
+        DC = findViewById(R.id.etDC);
+        buttonUpdate = findViewById(R.id.btnUpdate);
+        buttonReturn = findViewById(R.id.btnReturn);
 
         // Initialize database service and get current user ID
         databaseService = DatabaseService.getInstance();
@@ -74,10 +74,10 @@ public class UpdateUser extends AppCompatActivity {
             public void onCompleted(User user) {
                 if (user != null) {
                     // Set user details into the EditText fields
-                    editTextFirstName.setText(user.getFname());
-                    editTextLastName.setText(user.getLname());
-                    editTextPhone.setText(user.getPhone());
-                    editTextDailyCal.setText(user.getDailycal());
+                    FName.setText(user.getFname());
+                    LName.setText(user.getLname());
+                    Phone.setText(user.getPhone());
+                    DC.setText(user.getDailycal());
                 } else {
                     Toast.makeText(UpdateUser.this, "Failed to load user details.", Toast.LENGTH_SHORT).show();
                 }
@@ -92,39 +92,43 @@ public class UpdateUser extends AppCompatActivity {
 
     private void updateUser() {
         // Get input values
-        String firstName = editTextFirstName.getText().toString().trim();
-        String lastName = editTextLastName.getText().toString().trim();
-        String phone = editTextPhone.getText().toString().trim();
-        String dailyCalInput = editTextDailyCal.getText().toString().trim();
+        String fName = FName.getText().toString().trim();
+        String lName = LName.getText().toString().trim();
+        String phone = Phone.getText().toString().trim();
+        String dailyCalInput = DC.getText().toString().trim();
 
         // Validate inputs
-        if (TextUtils.isEmpty(firstName) && TextUtils.isEmpty(lastName) && TextUtils.isEmpty(phone) && TextUtils.isEmpty(dailyCalInput)) {
-            Toast.makeText(this, "Please enter at least one field to update.", Toast.LENGTH_SHORT).show();
+        if (fName.length() < 2) {
+            Toast.makeText(this, "שם פרטי קצר מדי", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (lName.length() < 2) {
+            Toast.makeText(this, "שם משפחה קצר מדי", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (phone.length() < 9 || phone.length() > 10) {
+            Toast.makeText(this, "מספר טלפון לא הגיוני", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Integer dailyCal = null;
         if (!TextUtils.isEmpty(dailyCalInput)) {
-            try {
-                dailyCal = Integer.parseInt(dailyCalInput);
-                if (dailyCal < 1000 || dailyCal > 10000) {
-                    Toast.makeText(this, "יעד קלוריות יומי חייב להיות הגיוני", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                Toast.makeText(this, "Invalid calorie limit. Please enter a number.", Toast.LENGTH_SHORT).show();
+            dailyCal = Integer.parseInt(dailyCalInput);
+            if (dailyCal < 1000 || dailyCal > 10000) {
+                Toast.makeText(this, "יעד קלוריות יומי חייב להיות הגיוני", Toast.LENGTH_SHORT).show();
                 return;
+                }
             }
-        }
+
 
         // Create a User object with updated fields
         User user = new User();
         user.setId(userId);
-        if (!TextUtils.isEmpty(firstName)) {
-            user.setFname(firstName);
+        if (!TextUtils.isEmpty(fName)) {
+            user.setFname(fName);
         }
-        if (!TextUtils.isEmpty(lastName)) {
-            user.setLname(lastName);
+        if (!TextUtils.isEmpty(lName)) {
+            user.setLname(lName);
         }
         if (!TextUtils.isEmpty(phone)) {
             user.setPhone(phone);

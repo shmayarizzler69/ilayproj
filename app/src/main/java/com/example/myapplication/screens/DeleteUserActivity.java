@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.appcompat.widget.SearchView;
 import com.example.myapplication.Adapters.UserAdapter;
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
@@ -23,9 +23,10 @@ public class DeleteUserActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
-    private List<User> userList;
+    private List<User> userList, filteredList;
     private DatabaseReference databaseReference;
-    ValueEventListener listener;
+    private ValueEventListener listener;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,32 +38,34 @@ public class DeleteUserActivity extends AppCompatActivity {
 
         // Initialize the RecyclerView and List
         recyclerView = findViewById(R.id.recyclerView);
+        searchView = findViewById(R.id.searchView);
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, userList, userId -> deleteUser(userId)); // Use a lambda
+        filteredList = new ArrayList<>();
+        userAdapter = new UserAdapter(this, filteredList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(userAdapter);
 
         // Fetch users and display them
         fetchUsers();
+
+        // Set up search functionality
+        setupSearchView();
     }
 
     private void fetchUsers() {
         listener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Clear previous data
                 userList.clear();
-
-                // Iterate through all the users in Firebase and add them to the list
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
                         userList.add(user);
                     }
                 }
-
-                // Notify the adapter that data has changed
+                filteredList.clear();
+                filteredList.addAll(userList);
                 userAdapter.notifyDataSetChanged();
             }
 
@@ -73,16 +76,34 @@ public class DeleteUserActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteUser(String userId) {
-        databaseReference.child(userId).removeValue().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(DeleteUserActivity.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
-                // Optionally, update the RecyclerView list after deletion
-                fetchUsers();
-            } else {
-                Toast.makeText(DeleteUserActivity.this, "Failed to delete user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false; // No need to handle submit
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterUsers(newText);
+                return true;
             }
         });
+    }
+
+    private void filterUsers(String query) {
+        filteredList.clear();
+        if (query.isEmpty()) {
+            filteredList.addAll(userList);
+        } else {
+            for (User user : userList) {
+                if (user.getId().toLowerCase().contains(query.toLowerCase()) ||
+                        user.getFname().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(user);
+                }
+            }
+        }
+        userAdapter.notifyDataSetChanged();
     }
 
     @Override
