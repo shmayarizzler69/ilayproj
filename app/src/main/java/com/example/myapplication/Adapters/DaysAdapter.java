@@ -1,14 +1,20 @@
 package com.example.myapplication.Adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Day;
+import com.example.myapplication.models.User;
+import com.example.myapplication.services.DatabaseService;
+import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.List;
 
@@ -16,6 +22,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
 
     private List<Day> dayList;
     private OnItemClickListener listener;
+
 
     public interface OnItemClickListener {
         void onItemClick(Day day);
@@ -49,6 +56,8 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
         private TextView tvDate;
         private TextView tvTotalCalories;
 
+        DatabaseService databaseService = DatabaseService.getInstance();
+
         public DayViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDate = itemView.findViewById(R.id.tvDate);
@@ -60,6 +69,26 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
             tvTotalCalories.setText("Total Calories: " + day.getSumcal());
 
             itemView.setOnClickListener(v -> listener.onItemClick(day));
+
+            int sumCal = day.getSumcal();
+
+            databaseService.getUser(databaseService.getCurrentUserId(), new DatabaseService.DatabaseCallback<User>() {
+                @Override
+                public void onCompleted(User user) {
+                    int cal_on_day = Integer.parseInt(user.getDailycal());
+
+                    if(sumCal < cal_on_day)
+                        itemView.setBackgroundColor(Color.parseColor("#87FF0000"));
+                    else
+                        itemView.setBackgroundColor(Color.parseColor("#9238FF00"));
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+
+                }
+            });
+
         }
     }
 }
