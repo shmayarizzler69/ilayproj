@@ -3,12 +3,13 @@ package com.example.myapplication.models;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    String id, fname, lname, phone, email, password, dailycal;
+    String id, fname, lname, phone, email, password;
+    Integer dailycal;
 
     public User() {
     }
 
-    public User(String id, String fname, String lname, String phone, String email, String password, String dailycal) {
+    public User(String id, String fname, String lname, String phone, String email, String password, Integer dailycal) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -76,11 +77,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getDailycal() {
+    public Integer getDailycal() {
         return dailycal;
     }
 
-    public void setDailycal(String dailycal) {
+    public void setDailycal(Integer dailycal) {
         this.dailycal = dailycal;
     }
 

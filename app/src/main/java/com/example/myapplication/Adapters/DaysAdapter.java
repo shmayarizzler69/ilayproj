@@ -75,7 +75,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
             databaseService.getUser(databaseService.getCurrentUserId(), new DatabaseService.DatabaseCallback<User>() {
                 @Override
                 public void onCompleted(User user) {
-                    int cal_on_day = Integer.parseInt(user.getDailycal());
+                    int cal_on_day = user.getDailycal();
 
                     if(sumCal < cal_on_day)
                         itemView.setBackgroundColor(Color.parseColor("#87FF0000"));

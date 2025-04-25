@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onCompleted(String uid) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail A:success");
-                    User newUser = new User(uid, fName, lName, phone, email, pass, String.valueOf(dailyCal)); // Pass daily calorie goal
+                    User newUser = new User(uid, fName, lName, phone, email, pass, dailyCal);
                     Log.w(TAG, newUser.toString());
 
                     databaseService.createNewUser(newUser, new DatabaseService.DatabaseCallback<Void>() {

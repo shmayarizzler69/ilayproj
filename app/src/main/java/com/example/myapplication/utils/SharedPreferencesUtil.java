@@ -109,7 +109,7 @@ public class SharedPreferencesUtil {
         editor.putString("fName", user.getFname());
         editor.putString("lName", user.getLname());
         editor.putString("phone", user.getPhone());
-        editor.putString("dailycal", user.getDailycal());
+        editor.putInt("dailycal", user.getDailycal());
 
         editor.apply();
     }
@@ -131,7 +131,7 @@ public class SharedPreferencesUtil {
         String fName = sharedPreferences.getString("fName", "");
         String lName = sharedPreferences.getString("lName", "");
         String phone = sharedPreferences.getString("phone", "");
-        String dailycal = sharedPreferences.getString("dailycal", "");
+        Integer dailycal = sharedPreferences.getInt("dailycal", 0);
 
         return new User(uid, fName, lName, phone, email, password,dailycal);
     }

@@ -53,7 +53,7 @@ public class UserDetailsActivity extends AppCompatActivity {
             userLnameEditText.setText(user.getLname());
             userPhoneEditText.setText(user.getPhone());
             userEmailEditText.setText(user.getEmail());
-            userDailycalEditText.setText(user.getDailycal());
+            userDailycalEditText.setText(String.valueOf(user.getDailycal()));
 
             // Save changes functionality
             saveChangesButton.setOnClickListener(v -> {
@@ -61,32 +61,38 @@ public class UserDetailsActivity extends AppCompatActivity {
                 String updatedLname = userLnameEditText.getText().toString();
                 String updatedPhone = userPhoneEditText.getText().toString();
                 String updatedEmail = userEmailEditText.getText().toString();
-                String updatedDailycal = userDailycalEditText.getText().toString();
+                String updatedDailycalString = userDailycalEditText.getText().toString();
 
-                if (updatedFname.isEmpty() || updatedLname.isEmpty() || updatedPhone.isEmpty() || updatedEmail.isEmpty() || updatedDailycal.isEmpty()) {
+                if (updatedFname.isEmpty() || updatedLname.isEmpty() || updatedPhone.isEmpty() || updatedEmail.isEmpty() || updatedDailycalString.isEmpty()) {
                     Toast.makeText(UserDetailsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Update the user object
-                user.setFname(updatedFname);
-                user.setLname(updatedLname);
-                user.setPhone(updatedPhone);
-                user.setEmail(updatedEmail);
-                user.setDailycal(updatedDailycal);
+                try {
+                    Integer updatedDailycal = Integer.parseInt(updatedDailycalString);
 
-                // Update user data using DatabaseService
-                databaseService.updateUser(user, new DatabaseCallback<Void>() {
-                    @Override
-                    public void onCompleted(Void result) {
-                        Toast.makeText(UserDetailsActivity.this, "User details updated successfully", Toast.LENGTH_SHORT).show();
-                    }
+                    // Update the user object
+                    user.setFname(updatedFname);
+                    user.setLname(updatedLname);
+                    user.setPhone(updatedPhone);
+                    user.setEmail(updatedEmail);
+                    user.setDailycal(updatedDailycal);
 
-                    @Override
-                    public void onFailed(Exception e) {
-                        Toast.makeText(UserDetailsActivity.this, "Failed to update user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    // Update user data using DatabaseService
+                    databaseService.updateUser(user, new DatabaseCallback<Void>() {
+                        @Override
+                        public void onCompleted(Void result) {
+                            Toast.makeText(UserDetailsActivity.this, "User details updated successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailed(Exception e) {
+                            Toast.makeText(UserDetailsActivity.this, "Failed to update user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (NumberFormatException e) {
+                    Toast.makeText(UserDetailsActivity.this, "Daily calorie count must be a valid number", Toast.LENGTH_SHORT).show();
+                }
             });
 
             // Delete user functionality

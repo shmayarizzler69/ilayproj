@@ -134,7 +134,7 @@ public class UpdateUser extends AppCompatActivity {
             user.setPhone(phone);
         }
         if (dailyCal != null) {
-            user.setDailycal(String.valueOf(dailyCal));
+            user.setDailycal(dailyCal);
         }
 
         // Perform the update
