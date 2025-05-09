@@ -98,7 +98,6 @@ public class DatabaseService {
 
     /// get data from the database at a specific path
     /// @param path the path to get the data from
-    /// @param clazz the class of the object to return
     /// @param callback the callback to call when the operation is completed
     /// @return void
     /// @see DatabaseCallback
@@ -166,12 +165,7 @@ public class DatabaseService {
     public void deleteMeal(final Meal meal, @NotNull final DatabaseCallback<Void> callback) {
       deleteData("Users/" +getCurrentUserId()+"/meals/"+meal.getMealId(), callback);
     }
-    public void deleteMealFromFirebase(Meal meal, String userId, DatabaseCallback<Void> callback) {
-        DatabaseReference userMealsRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("meals");
-        userMealsRef.child(meal.getId()).removeValue()
-                .addOnSuccessListener(aVoid -> callback.onCompleted(null))
-                .addOnFailureListener(callback::onFailed);
-    }
+
 
     /// get a list of data from the database at a specific path
     /// @param path the path to get the data from

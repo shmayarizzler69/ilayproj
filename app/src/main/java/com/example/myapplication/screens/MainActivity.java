@@ -15,14 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
 import com.example.myapplication.utils.NPH;
-import com.example.myapplication.models.User;
-import com.example.myapplication.models.Day;
 import com.example.myapplication.utils.NotificationHelper;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnRegister, btnLogin, btnAbout, btntest;
@@ -41,66 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         initViews();
-
-        requestNotificationPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    if (!isGranted) {
-                        // Handle the case where permission is not granted
-                    }
-                });
-
-        if (!NPH.hasNP(this)) {
-            NPH.requestNP(requestNotificationPermissionLauncher);
-        }
-
-        // Fetch data from Firebase and check calories
-        fetchUserDataAndCheckCalories();
-    }
-
-    private void fetchUserDataAndCheckCalories() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("Users").child("userId"); // Replace "userId" with actual user ID
-        DatabaseReference dayRef = database.getReference("Days").child("currentDayId"); // Replace "currentDayId" with today's date or ID
-
-        // Fetch user data
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null) {
-                    // Fetch day data
-                    dayRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot daySnapshot) {
-                            Day day = daySnapshot.getValue(Day.class);
-                            if (day != null) {
-                                checkDailyCalories(user, day); // Check if the calorie intake exceeds the limit
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            // Handle any error in fetching day data
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle any error in fetching user data
-            }
-        });
-    }
-
-    private void checkDailyCalories(User user, Day day) {
-        if (user.getDailycal() != null && day.getSumcal() > user.getDailycal()) {
-            // Trigger notification
-            String title = "Calorie Alert";
-            String message = "Your daily calorie intake has exceeded your set limit!";
-            NotificationHelper.sendNotification(this, title, message);
-        }
+        initNotificationPermission();
     }
 
     private void initViews() {
@@ -112,6 +46,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLogin.setOnClickListener(this);
         btnAbout = findViewById(R.id.btnAbout);
         btnAbout.setOnClickListener(this);
+    }
+
+    private void initNotificationPermission() {
+        // Register the permission request launcher
+        requestNotificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        Notification();
+                    }
+                    // Handle cases where the user denies the permission if necessary
+                });
+
+        // Check and request notification permission if needed
+        if (NPH.hasNP(this)) {
+            Notification();
+        } else {
+            NPH.requestNP(requestNotificationPermissionLauncher);
+        }
+    }
+
+    private void Notification() {
+        NotificationHelper.sendNotification(
+                this,
+                "יואו",
+                "ברוך הבא לאפליקציה!"
+        );
     }
 
     @Override
