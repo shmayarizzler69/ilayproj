@@ -53,7 +53,7 @@ public class AfterLoginMain extends AppCompatActivity implements View.OnClickLis
 
         if (v==btntest){
 
-            Intent goAdd=new Intent(getApplicationContext(), Addfood.class);
+            Intent goAdd=new Intent(getApplicationContext(), AddFood.class);
             startActivity(goAdd);
         }
        if (v==btnAbout){

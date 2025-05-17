@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Basic colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
-    <color name="light_gray">#F5F5F5</color> <!-- Light gray for the background -->
-    <color name="primary">#6200EE</color> <!-- Primary color (e.g., purple) -->
-    <color name="white">#FFFFFF</color> <!-- White for text -->
-    <color name="black">#000000</color> <!-- Black for text -->
-    <color name="red">#87FF0000</color> <!-- Black for text -->
-    <color name="green">#9238FF00</color> <!-- Black for text -->
+    <!-- Theme colors -->
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">#FF4081</color>
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 </resources>

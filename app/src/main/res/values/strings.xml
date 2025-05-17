@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="select_meal_type">Select Meal Type</string>
+    
+    <!-- AddFood Activity -->
+    <string name="enter_food_hint">Enter food</string>
+    <string name="calories_hint">Calories</string>
+    <string name="row_removed">Last row removed.</string>
+    <string name="no_rows_to_remove">No rows to remove.</string>
+    <string name="day_updated">Day updated successfully</string>
+    <string name="day_created">Day created successfully</string>
+    <string name="failed_search_day">Failed to search for day</string>
+    <string name="failed_update_day">Failed to update day</string>
+    <string name="failed_create_day">Failed to create day</string>
+    <string name="selected_meal_type">Selected meal type: %s</string>
 </resources>

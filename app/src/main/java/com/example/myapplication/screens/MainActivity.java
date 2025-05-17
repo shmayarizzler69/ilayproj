@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
-        btntest = findViewById(R.id.btntest);
-        btntest.setOnClickListener(this);
+
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
         btnAbout = findViewById(R.id.btnAbout);

@@ -15,6 +15,7 @@ import com.example.myapplication.models.Day;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.DatabaseService;
 import com.google.firebase.database.collection.LLRBNode;
+import com.example.myapplication.utils.NotificationHelper;
 
 import java.util.List;
 
@@ -77,15 +78,24 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
                 public void onCompleted(User user) {
                     int cal_on_day = user.getDailycal();
 
-                    if(sumCal < cal_on_day)
+                    if(sumCal < cal_on_day) {
                         itemView.setBackgroundColor(Color.parseColor("#87FF0000"));
-                    else
+                        // Send notification when calories are below daily goal
+                        String title = "Calorie Alert";
+                        String message = "You've only consumed " + sumCal + " calories today. Your daily goal is " + cal_on_day + " calories. Consider eating more!";
+                        NotificationHelper.sendNotification(itemView.getContext(), title, message);
+                    } else {
                         itemView.setBackgroundColor(Color.parseColor("#9238FF00"));
+                        // Send congratulatory notification when daily goal is reached
+                        String title = "Congratulations!";
+                        String message = "Great job! You've reached your daily calorie goal of " + cal_on_day + " calories!";
+                        NotificationHelper.sendNotification(itemView.getContext(), title, message);
+                    }
                 }
 
                 @Override
                 public void onFailed(Exception e) {
-
+                    // Handle error
                 }
             });
 

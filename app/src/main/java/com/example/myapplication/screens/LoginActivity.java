@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import androidx.core.app.NotificationCompat;
+import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +23,19 @@ import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
 import com.example.myapplication.utils.SharedPreferencesUtil;
 import com.example.myapplication.utils.Validator;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
+    private static final String CHANNEL_ID = "welcome_channel";
+    private static final int NOTIFICATION_ID = 1;
 
-    private EditText etEmail, etPassword;
-    private Button btnGoLog;
+    private TextInputLayout tilEmail, tilPassword;
+    private TextInputEditText etEmail, etPassword;
+    private MaterialButton btnGoLog;
 
     private AuthenticationService authenticationService;
     private DatabaseService databaseService;
@@ -44,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,16 +65,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         user = SharedPreferencesUtil.getUser(LoginActivity.this);
 
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        btnGoLog = findViewById(R.id.btnLog);
-
-        btnGoLog.setOnClickListener(this);
+        initViews();
+        setupListeners();
 
         if (user != null) {
             etEmail.setText(user.getEmail());
             etPassword.setText(user.getPassword());
         }
+    }
+
+    private void initViews() {
+        tilEmail = findViewById(R.id.tilEmail);
+        tilPassword = findViewById(R.id.tilPassword);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnGoLog = findViewById(R.id.btnLog);
+    }
+
+    private void setupListeners() {
+        btnGoLog.setOnClickListener(this);
+
+        // Clear errors on text change
+        etEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                tilEmail.setError(null);
+            }
+        });
+
+        etPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                tilPassword.setError(null);
+            }
+        });
     }
 
     @Override
@@ -95,24 +127,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean checkInput(String email, String password) {
+        boolean isValid = true;
+
         if (!Validator.isEmailValid(email)) {
             Log.e(TAG, "checkInput: Invalid email address");
-            etEmail.setError("Invalid email address");
-            etEmail.requestFocus();
-            return false;
+            tilEmail.setError("כתובת אימייל לא תקינה");
+            isValid = false;
         }
 
         if (!Validator.isPasswordValid(password)) {
             Log.e(TAG, "checkInput: Password must be at least 6 characters long");
-            etPassword.setError("Password must be at least 6 characters long");
-            etPassword.requestFocus();
-            return false;
+            tilPassword.setError("הסיסמה חייבת להכיל לפחות 6 תווים");
+            isValid = false;
         }
 
-        return true;
+        return isValid;
     }
 
     private void loginUser(String email, String password) {
+        btnGoLog.setEnabled(false);
+        
         authenticationService.signIn(email, password, new AuthenticationService.AuthCallback<String>() {
             @Override
             public void onCompleted(String uid) {
@@ -123,6 +157,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d(TAG, "onCompleted: User data retrieved successfully");
                         SharedPreferencesUtil.saveUser(LoginActivity.this, user);
 
+                        // Show welcome notification
+                        showWelcomeNotification(user.getFname(), user.getLname());
+
                         Intent mainIntent = new Intent(LoginActivity.this, AfterLoginMain.class);
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(mainIntent);
@@ -131,8 +168,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onFailed(Exception e) {
                         Log.e(TAG, "onFailed: Failed to retrieve user data", e);
-                        etPassword.setError("Invalid email or password");
-                        etPassword.requestFocus();
+                        tilPassword.setError("אימייל או סיסמה לא נכונים");
+                        btnGoLog.setEnabled(true);
                         authenticationService.signOut();
                     }
                 });
@@ -141,8 +178,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailed(Exception e) {
                 Log.w(TAG, "signInWithEmail:failure", e);
-                Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "ההתחברות נכשלה.", Toast.LENGTH_SHORT).show();
+                btnGoLog.setEnabled(true);
             }
         });
+    }
+
+
+
+    private void showWelcomeNotification(String firstName, String lastName) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("ברוך שובך!")
+                .setContentText("שלום " + firstName)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }
