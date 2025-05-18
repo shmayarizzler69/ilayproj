@@ -394,6 +394,22 @@ public class DatabaseService {
         });
     }
 
+    public void addDay(@NotNull final Day day, @NotNull final DatabaseCallback<Void> callback) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            callback.onFailed(new Exception("User not authenticated"));
+            return;
+        }
+
+        // Generate a new ID for the day if it doesn't have one
+        if (day.getDayId() == null) {
+            day.setDayId(generateDayId());
+        }
+
+        // Write the day to the database under the user's days
+        writeData("Users/" + userId + "/days/" + day.getDayId(), day, callback);
+    }
+
 }
 
 

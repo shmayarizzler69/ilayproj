@@ -2,10 +2,16 @@ package com.example.myapplication.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import androidx.appcompat.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,77 +20,186 @@ import com.example.myapplication.Adapters.DaysAdapter;
 import com.example.myapplication.models.Day;
 import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DaysListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DaysAdapter adapter;
     private List<Day> dayList;
+    private List<Day> filteredDayList;
     private DatabaseService databaseService;
+    private ProgressBar progressBar;
+    private TextView emptyStateText;
+    private View errorView;
+    private boolean isAscendingOrder = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_days_list);
 
+        // Setup toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Days");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Initialize views
         recyclerView = findViewById(R.id.recyclerViewDays);
+        progressBar = findViewById(R.id.progressBar);
+        emptyStateText = findViewById(R.id.emptyStateText);
+        errorView = findViewById(R.id.errorView);
+
+        // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dayList = new ArrayList<>();
-        adapter = new DaysAdapter(dayList, day -> {
-            // Open a new activity to show details
-            Intent intent = new Intent(DaysListActivity.this, DayDetailActivity.class);
-            intent.putExtra("day", day);
-            startActivity(intent);
-        });
+        filteredDayList = new ArrayList<>();
+        adapter = new DaysAdapter(filteredDayList, this::onDayClicked);
+        recyclerView.setAdapter(adapter);
 
+        // Initialize services
         databaseService = DatabaseService.getInstance();
 
-        // Set the OnClickListener for the return button
-        Button returnButton = findViewById(R.id.returnButton);
-        returnButton.setOnClickListener(v -> {
-            Intent intent = new Intent(DaysListActivity.this, AfterLoginMain.class);
+        // Setup FAB for adding new day
+        FloatingActionButton fab = findViewById(R.id.fabAddDay);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(DaysListActivity.this, AddDayActivity.class);
             startActivity(intent);
-            finish();
         });
 
         // Initial data load
         loadDays();
     }
 
+    private void onDayClicked(Day day) {
+        Intent intent = new Intent(DaysListActivity.this, DayDetailActivity.class);
+        intent.putExtra("day", day);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.days_list_menu, menu);
+        
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterDays(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterDays(newText);
+                return true;
+            }
+        });
+        
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_sort) {
+            isAscendingOrder = !isAscendingOrder;
+            sortDays();
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void filterDays(String query) {
+        if (query.isEmpty()) {
+            filteredDayList.clear();
+            filteredDayList.addAll(dayList);
+        } else {
+            filteredDayList.clear();
+            filteredDayList.addAll(dayList.stream()
+                    .filter(day -> day.getTitle().toLowerCase().contains(query.toLowerCase()))
+                    .collect(Collectors.toList()));
+        }
+        adapter.notifyDataSetChanged();
+        updateEmptyState();
+    }
+
+    private void sortDays() {
+        Collections.sort(filteredDayList, (d1, d2) -> {
+            int result = d1.getDate().compareTo(d2.getDate());
+            return isAscendingOrder ? result : -result;
+        });
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload data when returning to this activity
         loadDays();
     }
 
     private void loadDays() {
+        showLoading();
         String currentUserId = AuthenticationService.getInstance().getCurrentUserId();
 
         if (currentUserId != null) {
             databaseService.getAllDays(currentUserId, new DatabaseService.DatabaseCallback<List<Day>>() {
                 @Override
                 public void onCompleted(List<Day> days) {
+                    hideLoading();
                     dayList.clear();
                     dayList.addAll(days);
-                    // Sort the list by date
-                    Collections.sort(dayList, (d1, d2) -> d2.getDate().compareTo(d1.getDate()));
-
-                    // Notify the adapter of data changes
-                    adapter.notifyDataSetChanged();
-                    recyclerView.setAdapter(adapter);
+                    filteredDayList.clear();
+                    filteredDayList.addAll(days);
+                    sortDays();
+                    updateEmptyState();
                 }
 
                 @Override
                 public void onFailed(Exception e) {
-                    Toast.makeText(DaysListActivity.this, "Failed to load days", Toast.LENGTH_SHORT).show();
+                    hideLoading();
+                    showError(e.getMessage());
                 }
             });
         } else {
-            Toast.makeText(this, "User not authenticated!", Toast.LENGTH_SHORT).show();
+            hideLoading();
+            showError("User not authenticated!");
+        }
+    }
+
+    private void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        errorView.setVisibility(View.GONE);
+        emptyStateText.setVisibility(View.GONE);
+    }
+
+    private void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showError(String message) {
+        errorView.setVisibility(View.VISIBLE);
+        Snackbar.make(recyclerView, message, Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry", v -> loadDays())
+                .show();
+    }
+
+    private void updateEmptyState() {
+        if (filteredDayList.isEmpty()) {
+            emptyStateText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

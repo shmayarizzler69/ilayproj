@@ -1,59 +1,37 @@
-
 package com.example.myapplication.models;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
-public class MyDate implements Serializable {
-
-    int day, month, year;
+public class MyDate implements Serializable, Comparable<MyDate> {
+    private int year;
+    private int month;
+    private int day;
 
     public MyDate() {
+        // Default constructor required for Firebase
     }
 
-    public MyDate(int day, int month, int year) {
-        this.day = day;
-        this.month = month;
+    public MyDate(Date date) {
+        if (date != null) {
+            @SuppressWarnings("deprecation")
+            int year = date.getYear() + 1900;
+            @SuppressWarnings("deprecation")
+            int month = date.getMonth() + 1;
+            @SuppressWarnings("deprecation")
+            int day = date.getDate();
+            
+            this.year = year;
+            this.month = month;
+            this.day = day;
+        }
+    }
+
+    public MyDate(int year, int month, int day) {
         this.year = year;
-    }
-
-    public MyDate(Date currentDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-
-        this.day = calendar.get(Calendar.DAY_OF_MONTH);
-        this.month = calendar.get(Calendar.MONTH) + 1; // 0=ינואר ו11=דצמבר
-        this.year = calendar.get(Calendar.YEAR);
-    }
-
-
-    public Date asDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, this.year);
-        calendar.set(Calendar.MONTH, this.month - 1);
-        calendar.set(Calendar.DAY_OF_MONTH, this.day);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
         this.month = month;
+        this.day = day;
     }
 
     public int getYear() {
@@ -64,19 +42,40 @@ public class MyDate implements Serializable {
         this.year = year;
     }
 
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public Date asDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, this.year);
+        calendar.set(Calendar.MONTH, this.month - 1); // Calendar months are 0-based
+        calendar.set(Calendar.DAY_OF_MONTH, this.day);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
     @Override
     public String toString() {
-        return year+"/"+month+"/"+day;
-
+        return String.format("%02d/%02d/%04d", day, month, year);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MyDate myDate = (MyDate) o;
-        return day == myDate.day && month == myDate.month && year == myDate.year;
-    }
     public int compareTo(MyDate other) {
         if (this.year != other.year) {
             return Integer.compare(this.year, other.year);
@@ -88,7 +87,10 @@ public class MyDate implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(day, month, year);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyDate myDate = (MyDate) o;
+        return year == myDate.year && month == myDate.month && day == myDate.day;
     }
 }

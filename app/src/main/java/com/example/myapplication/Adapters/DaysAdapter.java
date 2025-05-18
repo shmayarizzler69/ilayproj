@@ -56,6 +56,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
     static class DayViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDate;
         private TextView tvTotalCalories;
+        private TextView tvGoalIndicator;
 
         DatabaseService databaseService = DatabaseService.getInstance();
 
@@ -63,6 +64,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
             super(itemView);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvTotalCalories = itemView.findViewById(R.id.tvTotalCalories);
+            tvGoalIndicator = itemView.findViewById(R.id.tvGoalIndicator);
         }
 
         public void bind(Day day, OnItemClickListener listener) {
@@ -80,12 +82,16 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
 
                     if(sumCal < cal_on_day) {
                         itemView.setBackgroundColor(Color.parseColor("#87FF0000"));
+                        tvGoalIndicator.setText("✗");
+                        tvGoalIndicator.setTextColor(Color.RED);
                         // Send notification when calories are below daily goal
                         String title = "Calorie Alert";
                         String message = "You've only consumed " + sumCal + " calories today. Your daily goal is " + cal_on_day + " calories. Consider eating more!";
                         NotificationHelper.sendNotification(itemView.getContext(), title, message);
                     } else {
                         itemView.setBackgroundColor(Color.parseColor("#9238FF00"));
+                        tvGoalIndicator.setText("✓");
+                        tvGoalIndicator.setTextColor(Color.GREEN);
                         // Send congratulatory notification when daily goal is reached
                         String title = "Congratulations!";
                         String message = "Great job! You've reached your daily calorie goal of " + cal_on_day + " calories!";
@@ -98,7 +104,6 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.DayViewHolder>
                     // Handle error
                 }
             });
-
         }
     }
 }

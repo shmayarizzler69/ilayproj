@@ -14,26 +14,50 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date"
-            android:textColor="#6495ED"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
 
-        <TextView
-            android:id="@+id/tvTotalCalories"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Calories"
-            android:textColor="#2B4F81"
-            android:fontFamily="sans-serif"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textColor="#6495ED"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTotalCalories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Calories"
+                    android:textColor="#2B4F81"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvGoalIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="100dp"
