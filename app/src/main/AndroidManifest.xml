@@ -60,6 +60,7 @@
             android:name=".screens.AddDayActivity"
             android:exported="false"
             android:parentActivityName=".screens.DaysListActivity" />
+        <activity android:name=".screens.AboutActivity" />
     </application>
 
 </manifest>

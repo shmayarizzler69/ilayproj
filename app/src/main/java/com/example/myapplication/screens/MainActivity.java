@@ -88,5 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent golog = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(golog);
         }
+        if (v == btnAbout) {
+            Intent goAbout = new Intent(getApplicationContext(), AboutActivity.class);
+            startActivity(goAbout);
+        }
     }
 }
