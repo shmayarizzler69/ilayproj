@@ -44,6 +44,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private AuthenticationService authenticationService;
     private DatabaseService databaseService;
     private String currentUserId;
+    private Day existingDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,15 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         initializeFields();
         setupButtons();
         setupMealTypeSpinner();
+        
+        // Add initial row
+        addNewRowWithTwoEditTexts();
+
+        // Get the existing day if passed from DayDetailActivity
+        existingDay = (Day) getIntent().getSerializableExtra("day");
+        if (existingDay != null) {
+            btnBack.setOnClickListener(v -> finish()); // Go back to DayDetailActivity
+        }
     }
 
     private void initializeFields() {
@@ -103,26 +113,44 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void handleSubmit() {
-        MyDate currentMyDate = new MyDate(getCurrentDate());
-        databaseService.searchDayByDate(currentMyDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
-            @Override
-            public void onCompleted(@Nullable Day day) {
-                handleDaySearchResult(day, currentMyDate);
-            }
-
-            @Override
-            public void onFailed(Exception e) {
-                Toast.makeText(AddFood.this, "Failed to search for day", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Failed to search for day", e);
-            }
-        });
-    }
-
-    private void handleDaySearchResult(Day day, MyDate currentMyDate) {
         String mealId = databaseService.generateMealId();
         meal.setMealId(mealId);
         meal.setCal(calculateTotalCalories());
 
+        if (existingDay != null) {
+            // Update existing day
+            existingDay.addMeal(meal);
+            databaseService.updateDay(existingDay, currentUserId, new DatabaseService.DatabaseCallback<Void>() {
+                @Override
+                public void onCompleted(Void result) {
+                    Toast.makeText(AddFood.this, "Meal added successfully!", Toast.LENGTH_SHORT).show();
+                    finish(); // Return to DayDetailActivity
+                }
+
+                @Override
+                public void onFailed(Exception exception) {
+                    Toast.makeText(AddFood.this, "Failed to add meal: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Create new day or update existing day for current date
+            MyDate currentMyDate = new MyDate(getCurrentDate());
+            databaseService.searchDayByDate(currentMyDate, currentUserId, new DatabaseService.DatabaseCallback<Day>() {
+                @Override
+                public void onCompleted(@Nullable Day day) {
+                    handleDaySearchResult(day, currentMyDate);
+                }
+
+                @Override
+                public void onFailed(Exception e) {
+                    Toast.makeText(AddFood.this, "Failed to search for day", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to search for day", e);
+                }
+            });
+        }
+    }
+
+    private void handleDaySearchResult(Day day, MyDate currentMyDate) {
         if (day != null) {
             updateExistingDay(day);
             return;
@@ -175,8 +203,12 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == btnBack) {
-            Intent goback = new Intent(getApplicationContext(), AfterLoginMain.class);
-            startActivity(goback);
+            if (existingDay != null) {
+                finish(); // Return to DayDetailActivity
+            } else {
+                Intent goback = new Intent(getApplicationContext(), AfterLoginMain.class);
+                startActivity(goback);
+            }
         }
     }
 

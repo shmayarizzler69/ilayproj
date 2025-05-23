@@ -134,7 +134,7 @@ public class DatabaseService {
         writeData("Users/" + user.getId()+"/fname", user.getFname(), callback);
         writeData("Users/" + user.getId()+"/lname", user.getLname(), callback);
         writeData("Users/" + user.getId()+"/phone", user.getPhone(), callback);
-
+        writeData("Users/" + user.getId()+"/dailycal", user.getDailycal(), callback);
     }
 
     private <T> void getData(@NotNull final String path, @NotNull final Class<T> clazz, @NotNull final DatabaseCallback<T> callback) {
