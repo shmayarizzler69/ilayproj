@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseService databaseService;
     private User user = null;
 
-    // Admin credentials
+    // פרטי מנהל
     private final String ADMIN_EMAIL = "admin@gmail.com";
     private final String ADMIN_PASSWORD = "admin123";
 
@@ -113,13 +113,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (!checkInput(email, password)) return;
 
             if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
-                // Handle admin login
+                // כניסת מנהל
                 isAdmin = true;
                 Log.d(TAG, "onClick: Admin logged in");
                 Intent adminIntent = new Intent(LoginActivity.this, AdminPage.class);
                 startActivity(adminIntent);
             } else {
-                // Handle regular user login
+                // כניסת משתמש
                 Log.d(TAG, "onClick: Logging in user...");
                 loginUser(email, password);
             }

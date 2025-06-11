@@ -24,10 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// מסך רשימת הימים - מציג את כל הימים שנשמרו, מאפשר חיפוש והוספת יום חדש
 public class DaysListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DaysAdapter adapter;
@@ -37,8 +37,8 @@ public class DaysListActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView emptyStateText;
     private View errorView;
-    private boolean isAscendingOrder = false;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את הרשימה ואת כפתור ההוספה
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +77,14 @@ public class DaysListActivity extends AppCompatActivity {
         loadDays();
     }
 
+    // פונקציה שמטפלת בלחיצה על יום ברשימה - פותחת את פרטי היום
     private void onDayClicked(Day day) {
         Intent intent = new Intent(DaysListActivity.this, DayDetailActivity.class);
         intent.putExtra("day", day);
         startActivity(intent);
     }
 
+    // פונקציה שמגדירה את תיבת החיפוש בסרגל העליון
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.days_list_menu, menu);
@@ -108,17 +110,14 @@ public class DaysListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_sort) {
-            isAscendingOrder = !isAscendingOrder;
-            sortDays();
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // פונקציה שמסננת את הימים לפי טקסט החיפוש
     private void filterDays(String query) {
         if (query.isEmpty()) {
             filteredDayList.clear();
@@ -126,19 +125,12 @@ public class DaysListActivity extends AppCompatActivity {
         } else {
             filteredDayList.clear();
             filteredDayList.addAll(dayList.stream()
-                    .filter(day -> day.getTitle().toLowerCase().contains(query.toLowerCase()))
+                    .filter(day -> day.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                            day.getDescription().toLowerCase().contains(query.toLowerCase()))
                     .collect(Collectors.toList()));
         }
-        adapter.notifyDataSetChanged();
+        adapter.updateData(filteredDayList);
         updateEmptyState();
-    }
-
-    private void sortDays() {
-        Collections.sort(filteredDayList, (d1, d2) -> {
-            int result = d1.getDate().compareTo(d2.getDate());
-            return isAscendingOrder ? result : -result;
-        });
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -147,6 +139,7 @@ public class DaysListActivity extends AppCompatActivity {
         loadDays();
     }
 
+    // פונקציה שטוענת את כל הימים מהמסד נתונים
     private void loadDays() {
         showLoading();
         String currentUserId = AuthenticationService.getInstance().getCurrentUserId();
@@ -160,7 +153,7 @@ public class DaysListActivity extends AppCompatActivity {
                     dayList.addAll(days);
                     filteredDayList.clear();
                     filteredDayList.addAll(days);
-                    sortDays();
+                    adapter.updateData(filteredDayList);
                     updateEmptyState();
                 }
 
@@ -176,16 +169,19 @@ public class DaysListActivity extends AppCompatActivity {
         }
     }
 
+    // פונקציה שמציגה אנימציית טעינה
     private void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.GONE);
         emptyStateText.setVisibility(View.GONE);
     }
 
+    // פונקציה שמסתירה את אנימציית הטעינה
     private void hideLoading() {
         progressBar.setVisibility(View.GONE);
     }
 
+    // פונקציה שמציגה הודעת שגיאה
     private void showError(String message) {
         errorView.setVisibility(View.VISIBLE);
         Snackbar.make(recyclerView, message, Snackbar.LENGTH_INDEFINITE)
@@ -193,6 +189,7 @@ public class DaysListActivity extends AppCompatActivity {
                 .show();
     }
 
+    // פונקציה שמעדכנת את התצוגה כשאין ימים להצגה
     private void updateEmptyState() {
         if (filteredDayList.isEmpty()) {
             emptyStateText.setVisibility(View.VISIBLE);

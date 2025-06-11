@@ -110,6 +110,10 @@ public class SharedPreferencesUtil {
         editor.putString("lName", user.getLname());
         editor.putString("phone", user.getPhone());
         editor.putInt("dailycal", user.getDailycal());
+        editor.putString("gender", user.getGender());
+        editor.putFloat("height", user.getHeight().floatValue());
+        editor.putFloat("weight", user.getWeight().floatValue());
+        editor.putInt("age", user.getAge());
 
         editor.apply();
     }
@@ -132,8 +136,12 @@ public class SharedPreferencesUtil {
         String lName = sharedPreferences.getString("lName", "");
         String phone = sharedPreferences.getString("phone", "");
         Integer dailycal = sharedPreferences.getInt("dailycal", 0);
+        String gender = sharedPreferences.getString("gender", "");
+        Double height = (double) sharedPreferences.getFloat("height", 0f);
+        Double weight = (double) sharedPreferences.getFloat("weight", 0f);
+        Integer age = sharedPreferences.getInt("age", 0);
 
-        return new User(uid, fName, lName, phone, email, password,dailycal);
+        return new User(uid, fName, lName, phone, email, password, dailycal, gender, height, weight, age);
     }
 
     /// Sign out the user by removing user data from shared preferences
@@ -148,7 +156,10 @@ public class SharedPreferencesUtil {
         editor.remove("lName");
         editor.remove("phone");
         editor.remove("dailycal");
-
+        editor.remove("gender");
+        editor.remove("height");
+        editor.remove("weight");
+        editor.remove("age");
 
         editor.apply();
     }

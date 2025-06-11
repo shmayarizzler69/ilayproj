@@ -1,124 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:background="#F5F7FA"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.AfterLoginMain">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <TextView
-        android:id="@+id/tvGoTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginBottom="32dp"
-        android:text="מסך בית"
-        android:textSize="32sp"
-        android:textColor="#1A237E"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-medium"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.cardview.widget.CardView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvGoTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5F7FA"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <TextView
+                android:id="@+id/tvGoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="מסך בית"
+                android:textColor="#1A237E"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/tvGoTitle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnGotest"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="מחשבון קלוריות"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textAllCaps="false"
+                        android:drawableStart="@android:drawable/ic_menu_edit"
+                        android:drawablePadding="12dp"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnGoAbout"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="כפתור לאפליקציה"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textAllCaps="false"
+                        android:drawableStart="@android:drawable/ic_menu_info_details"
+                        android:drawablePadding="12dp"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btninfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="פרטי משתמש"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textAllCaps="false"
+                        android:drawableStart="@android:drawable/ic_menu_myplaces"
+                        android:drawablePadding="12dp"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnUpdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="עדכון פרטי משתמש"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textAllCaps="false"
+                        android:drawableStart="@android:drawable/ic_menu_manage"
+                        android:drawablePadding="12dp"
+                        android:elevation="0dp"
+                        android:stateListAnimator="@null" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGotest"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/rounded_button"
-                android:text="מחשבון קלוריות"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:drawableStart="@android:drawable/ic_menu_edit"
-                android:drawablePadding="12dp"
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/rounded_button_outline"
+                android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
+                android:drawablePadding="8dp"
                 android:elevation="0dp"
-                android:stateListAnimator="@null" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnGoAbout"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/rounded_button"
-                android:text="כפתור לאפליקציה"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
+                android:paddingHorizontal="24dp"
+                android:stateListAnimator="@null"
+                android:text="התנתק"
                 android:textAllCaps="false"
-                android:drawableStart="@android:drawable/ic_menu_info_details"
-                android:drawablePadding="12dp"
-                android:elevation="0dp"
-                android:stateListAnimator="@null" />
+                android:textColor="#1A237E"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btninfo"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/rounded_button"
-                android:text="פרטי משתמש"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:drawableStart="@android:drawable/ic_menu_myplaces"
-                android:drawablePadding="12dp"
-                android:elevation="0dp"
-                android:stateListAnimator="@null" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@drawable/rounded_button"
-                android:text="עדכון פרטי משתמש"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:drawableStart="@android:drawable/ic_menu_manage"
-                android:drawablePadding="12dp"
-                android:elevation="0dp"
-                android:stateListAnimator="@null" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnLogout"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/rounded_button_outline"
-        android:text="התנתק"
-        android:textColor="#1A237E"
-        android:textSize="14sp"
-        android:textAllCaps="false"
-        android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
-        android:drawablePadding="8dp"
-        android:paddingHorizontal="24dp"
-        android:elevation="0dp"
-        android:stateListAnimator="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="24dp" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

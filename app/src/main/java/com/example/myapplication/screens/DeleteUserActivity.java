@@ -1,10 +1,11 @@
 package com.example.myapplication.screens;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
@@ -19,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+// מסך מחיקת משתמשים - מאפשר למנהל לראות את כל המשתמשים ולמחוק אותם
 public class DeleteUserActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -27,7 +29,10 @@ public class DeleteUserActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private ValueEventListener listener;
     private SearchView searchView;
+    private Toolbar toolbar;
+    private ImageButton backButton;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את הרשימה ואת תיבת החיפוש
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +41,13 @@ public class DeleteUserActivity extends AppCompatActivity {
         // Initialize Firebase database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
 
+        // Initialize views
+        initializeViews();
+        
+        // Set up toolbar and back button
+        setupToolbar();
+
         // Initialize the RecyclerView and List
-        recyclerView = findViewById(R.id.recyclerView);
-        searchView = findViewById(R.id.searchView);
         userList = new ArrayList<>();
         filteredList = new ArrayList<>();
         userAdapter = new UserAdapter(this, filteredList);
@@ -53,6 +62,29 @@ public class DeleteUserActivity extends AppCompatActivity {
         setupSearchView();
     }
 
+    // פונקציה שמאתחלת את כל הרכיבים במסך
+    private void initializeViews() {
+        recyclerView = findViewById(R.id.recyclerView);
+        searchView = findViewById(R.id.searchView);
+        toolbar = findViewById(R.id.toolbar);
+        backButton = findViewById(R.id.backButton);
+    }
+
+    // פונקציה שמגדירה את הסרגל העליון וכפתור החזרה
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DeleteUserActivity.this, AdminPage.class);
+            startActivity(intent);
+            finish(); // Close this activity
+        });
+    }
+
+    // פונקציה שמביאה את כל המשתמשים מהמסד נתונים
     private void fetchUsers() {
         listener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,6 +108,7 @@ public class DeleteUserActivity extends AppCompatActivity {
         });
     }
 
+    // פונקציה שמגדירה את תיבת החיפוש ואת אופן החיפוש
     private void setupSearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -91,6 +124,7 @@ public class DeleteUserActivity extends AppCompatActivity {
         });
     }
 
+    // פונקציה שמסננת את המשתמשים לפי טקסט החיפוש
     private void filterUsers(String query) {
         filteredList.clear();
         if (query.isEmpty()) {

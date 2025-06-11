@@ -20,15 +20,19 @@ import com.example.myapplication.services.DatabaseService;
 import com.example.myapplication.Adapters.MealAdapter;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+// מסך פרטי היום - מציג את כל המידע על יום ספציפי כולל הארוחות והקלוריות
 public class DayDetailActivity extends AppCompatActivity {
     private TextView tvDayDetail;
     private TextView tvCalories;
     private TextView tvEmptyState;
+    private TextView tvTitle;
+    private TextView tvDescription;
     private RecyclerView rvMeals;
     private DatabaseService databaseService;
     private Day day;
     private MealAdapter mealAdapter;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את כל התצוגה ומציגה את פרטי היום
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,8 @@ public class DayDetailActivity extends AppCompatActivity {
         tvDayDetail = findViewById(R.id.tvDayDetail);
         tvCalories = findViewById(R.id.tvCalories);
         tvEmptyState = findViewById(R.id.tvEmptyState);
+        tvTitle = findViewById(R.id.tvTitle);
+        tvDescription = findViewById(R.id.tvDescription);
         rvMeals = findViewById(R.id.rvMeals);
         databaseService = DatabaseService.getInstance();
         Button btnDeleteDay = findViewById(R.id.btnDeleteDay);
@@ -52,6 +58,8 @@ public class DayDetailActivity extends AppCompatActivity {
             // Display day details
             tvDayDetail.setText(day.getDate().toString());
             tvCalories.setText(String.valueOf(day.getSumcal()));
+            tvTitle.setText(day.getTitle());
+            tvDescription.setText(day.getDescription());
 
             // Set up the MealAdapter
             mealAdapter = new MealAdapter(this, day.getMeals(), meal -> {
@@ -69,6 +77,8 @@ public class DayDetailActivity extends AppCompatActivity {
                                 updateMealsUI();
                                 tvDayDetail.setText(day.getDate().toString());
                                 tvCalories.setText(String.valueOf(day.getSumcal()));
+                                tvTitle.setText(day.getTitle());
+                                tvDescription.setText(day.getDescription());
                             }
 
                             @Override
@@ -120,6 +130,7 @@ public class DayDetailActivity extends AppCompatActivity {
         }
     }
 
+    // פונקציה שמעדכנת את תצוגת הארוחות - מציגה הודעה אם אין ארוחות או את רשימת הארוחות אם יש
     private void updateMealsUI() {
         if (day.getMeals() == null || day.getMeals().isEmpty()) {
             tvEmptyState.setVisibility(View.VISIBLE);
@@ -130,6 +141,7 @@ public class DayDetailActivity extends AppCompatActivity {
         }
     }
 
+    // פונקציה שמופעלת כשחוזרים למסך - מרעננת את הנתונים למקרה שהיו שינויים
     @Override
     protected void onResume() {
         super.onResume();
@@ -145,7 +157,6 @@ public class DayDetailActivity extends AppCompatActivity {
                             updateMealsUI();
                             if (day.getMeals() != null) {
                                 mealAdapter = new MealAdapter(DayDetailActivity.this, day.getMeals(), meal -> {
-                                    // Reuse the existing delete meal logic
                                     if (meal != null) {
                                         day.getMeals().remove(meal);
                                         day.setSumcal(day.calculateTotalCalories());
@@ -157,6 +168,8 @@ public class DayDetailActivity extends AppCompatActivity {
                                                 updateMealsUI();
                                                 tvDayDetail.setText(day.getDate().toString());
                                                 tvCalories.setText(String.valueOf(day.getSumcal()));
+                                                tvTitle.setText(day.getTitle());
+                                                tvDescription.setText(day.getDescription());
                                             }
 
                                             @Override
@@ -169,6 +182,8 @@ public class DayDetailActivity extends AppCompatActivity {
                                 rvMeals.setAdapter(mealAdapter);
                                 tvDayDetail.setText(day.getDate().toString());
                                 tvCalories.setText(String.valueOf(day.getSumcal()));
+                                tvTitle.setText(day.getTitle());
+                                tvDescription.setText(day.getDescription());
                             }
                         }
                     }

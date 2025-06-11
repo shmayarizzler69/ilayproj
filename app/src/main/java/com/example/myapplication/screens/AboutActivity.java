@@ -1,8 +1,10 @@
 package com.example.myapplication.screens;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import com.example.myapplication.R;
 
 public class AboutActivity extends AppCompatActivity {
@@ -10,6 +12,12 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        // Setup toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("אודות");
 
         TextView aboutText = findViewById(R.id.aboutText);
         aboutText.setText("ברוכים הבאים ל-Diet Master!\n\n" +
@@ -27,5 +35,14 @@ public class AboutActivity extends AppCompatActivity {
                 "• לשמור על תזונה מאוזנת\n" +
                 "• לקבל המלצות מותאמות אישית\n\n" +
                 "אנחנו מחויבים לספק לכם את החוויה הטובה ביותר ולעזור לכם להשיג את המטרות שלכם.");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 } 

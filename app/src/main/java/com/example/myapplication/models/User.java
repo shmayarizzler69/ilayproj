@@ -5,11 +5,15 @@ import java.io.Serializable;
 public class User implements Serializable {
     String id, fname, lname, phone, email, password;
     Integer dailycal;
+    String gender;
+    Double height;
+    Double weight;
+    Integer age;
 
     public User() {
     }
 
-    public User(String id, String fname, String lname, String phone, String email, String password, Integer dailycal) {
+    public User(String id, String fname, String lname, String phone, String email, String password, Integer dailycal, String gender, Double height, Double weight, Integer age) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -17,6 +21,10 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.dailycal = dailycal;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.age = age;
     }
 
     public User(User user) {
@@ -27,6 +35,10 @@ public class User implements Serializable {
         this.email = user.email;
         this.password = user.password;
         this.dailycal = user.dailycal;
+        this.gender = user.gender;
+        this.height = user.height;
+        this.weight = user.weight;
+        this.age = user.age;
     }
 
     public String getId() {
@@ -85,6 +97,38 @@ public class User implements Serializable {
         this.dailycal = dailycal;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -95,6 +139,10 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", dailycal='" + dailycal + '\'' +
+                ", gender='" + gender + '\'' +
+                ", height='" + height + '\'' +
+                ", weight='" + weight + '\'' +
+                ", age='" + age + '\'' +
                 '}';
     }
 }

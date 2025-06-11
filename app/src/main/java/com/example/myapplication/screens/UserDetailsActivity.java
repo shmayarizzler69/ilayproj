@@ -42,7 +42,7 @@ public class UserDetailsActivity extends AppCompatActivity {
         // Initialize DatabaseService
         databaseService = DatabaseService.getInstance();
 
-        // Get user object from the Intent
+        // פונקציה שמציגה את פרטי המשתמש ומגדירה את פעולות הכפתורים
         Intent intent = getIntent();
         User user = (User) intent.getSerializableExtra("user");
 
@@ -55,7 +55,7 @@ public class UserDetailsActivity extends AppCompatActivity {
             userEmailEditText.setText(user.getEmail());
             userDailycalEditText.setText(String.valueOf(user.getDailycal()));
 
-            // Save changes functionality
+            // פונקציה שמעדכנת את פרטי המשתמש במסד הנתונים
             saveChangesButton.setOnClickListener(v -> {
                 String updatedFname = userFnameEditText.getText().toString();
                 String updatedLname = userLnameEditText.getText().toString();
@@ -95,7 +95,7 @@ public class UserDetailsActivity extends AppCompatActivity {
                 }
             });
 
-            // Delete user functionality
+            // פונקציה שמוחקת את המשתמש מהמערכת
             deleteUserButton.setOnClickListener(v -> {
                 String userId = user.getId();
                 databaseService.deleteUser(userId, new DatabaseCallback<Void>() {
@@ -112,7 +112,7 @@ public class UserDetailsActivity extends AppCompatActivity {
                 });
             });
 
-            // Back to DeleteUserActivity
+            // פונקציה שחוזרת למסך רשימת המשתמשים
             backToDeleteUserActivityButton.setOnClickListener(v -> {
                 Intent backIntent = new Intent(UserDetailsActivity.this, DeleteUserActivity.class);
                 startActivity(backIntent);

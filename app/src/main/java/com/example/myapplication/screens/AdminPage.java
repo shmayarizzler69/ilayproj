@@ -13,9 +13,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
 
+// מסך ניהול למנהל המערכת - מכאן אפשר לגשת לכל הפעולות הניהוליות
 public class AdminPage extends AppCompatActivity implements View.OnClickListener {
     Button btnAbout,btntest,btninfo;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את כל הכפתורים והתצוגה
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,29 +27,24 @@ public class AdminPage extends AppCompatActivity implements View.OnClickListener
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-
-
-
         });
         initViews();
-
     }
-    private void initViews() {
 
+    // פונקציה שמאתחלת את כל הכפתורים במסך ומגדירה מה יקרה בלחיצה עליהם
+    private void initViews() {
         btntest= findViewById(R.id.btnGotest);
         btntest.setOnClickListener(this);
         btninfo=findViewById(R.id.btninfo);
         btninfo.setOnClickListener(this);
         btnAbout = findViewById(R.id.btnGoAbout);
         btnAbout.setOnClickListener(this);
-
     }
 
+    // פונקציה שמטפלת בלחיצות על הכפתורים - מעבירה למסכים המתאימים
     @Override
     public void onClick(View v) {
-
         if (v==btntest){
-
             Intent goAdd=new Intent(getApplicationContext(), DeleteUserActivity.class);
             startActivity(goAdd);
         }
@@ -56,7 +53,6 @@ public class AdminPage extends AppCompatActivity implements View.OnClickListener
             startActivity(golog);
         }
         if (v==btninfo){
-
             Intent goinfo=new Intent(getApplicationContext(), UpdateUser.class);
             startActivity(goinfo);
         }

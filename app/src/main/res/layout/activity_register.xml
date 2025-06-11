@@ -24,7 +24,8 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginTop="32dp"
-                android:src="@drawable/app_logo"
+                android:src="@drawable/app"
+                android:scaleType="fitCenter"
                 android:contentDescription="App Logo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,6 +106,89 @@
                             android:inputType="phone"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Gender Spinner -->
+                    <TextView
+                        android:id="@+id/tvGenderLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="מגדר"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/text_primary"/>
+                    <Spinner
+                        android:id="@+id/spinnerGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:spinnerMode="dropdown"
+                        android:entries="@array/gender_array"/>
+
+                    <!-- Age Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="גיל"
+                        app:startIconDrawable="@drawable/ic_person"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Activity Level Spinner -->
+                    <TextView
+                        android:id="@+id/tvActivityLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="רמת פעילות גופנית"
+                        android:layout_marginBottom="4dp"
+                        android:textColor="@color/text_primary"/>
+                    <Spinner
+                        android:id="@+id/spinnerActivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:spinnerMode="dropdown"
+                        android:entries="@array/activity_levels"/>
+
+                    <!-- Height -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilHeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="גובה (ס&quot;מ)"
+                        app:startIconDrawable="@drawable/ic_height"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etHeight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Weight -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:hint="משקל (ק&quot;ג)"
+                        app:startIconDrawable="@drawable/ic_weight"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etWeight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilEmail"
                         android:layout_width="match_parent"
@@ -137,6 +221,18 @@
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"/>
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCalculateCalories"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="חשב קלוריות מומלצות"
+                        android:textSize="16sp"
+                        app:cornerRadius="28dp"
+                        app:icon="@drawable/ic_calories"
+                        app:iconGravity="textStart"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilDailyCal"

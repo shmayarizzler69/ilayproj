@@ -20,6 +20,7 @@ import com.example.myapplication.services.DatabaseService;
 
 import java.util.Calendar;
 
+// מסך להוספת יום חדש ביומן - כאן אפשר להוסיף כותרת, תיאור ותאריך
 public class AddDayActivity extends AppCompatActivity {
     private EditText titleEditText;
     private EditText descriptionEditText;
@@ -28,6 +29,7 @@ public class AddDayActivity extends AppCompatActivity {
     private DatabaseService databaseService;
     private MyDate selectedDate;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את כל הכפתורים והשדות שנראה במסך
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +68,14 @@ public class AddDayActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> saveDay());
     }
 
+    // פונקציה שמעדכנת את התצוגה של התאריך שנבחר על המסך
     private void updateDateDisplay() {
         if (selectedDate != null) {
             selectedDateText.setText(selectedDate.toString());
         }
     }
 
+    // פונקציה ששומרת את היום החדש במערכת - בודקת שהכל תקין ושולחת למסד הנתונים
     private void saveDay() {
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
@@ -87,29 +91,52 @@ public class AddDayActivity extends AppCompatActivity {
             return;
         }
 
-        // Create new day
-        Day newDay = new Day();
-        newDay.setTitle(title);
-        newDay.setDescription(description);
-        newDay.setDate(selectedDate);
-        newDay.setUserId(userId);
-
-        // Save to database
-        databaseService.addDay(newDay, new DatabaseService.DatabaseCallback<Void>() {
+        // Check if a day already exists for this date
+        databaseService.searchDayByDate(selectedDate, userId, new DatabaseService.DatabaseCallback<Day>() {
             @Override
-            public void onCompleted(Void result) {
-                Toast.makeText(AddDayActivity.this, "Day saved successfully", Toast.LENGTH_SHORT).show();
-                finish();
+            public void onCompleted(Day existingDay) {
+                if (existingDay != null) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(AddDayActivity.this, 
+                            "A day already exists for this date!", 
+                            Toast.LENGTH_SHORT).show();
+                    });
+                    return;
+                }
+
+                // Create new day
+                Day newDay = new Day();
+                newDay.setTitle(title);
+                newDay.setDescription(description);
+                newDay.setDate(selectedDate);
+                newDay.setUserId(userId);
+
+                // Save to database
+                databaseService.addDay(newDay, new DatabaseService.DatabaseCallback<Void>() {
+                    @Override
+                    public void onCompleted(Void result) {
+                        Toast.makeText(AddDayActivity.this, "Day saved successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailed(Exception e) {
+                        Toast.makeText(AddDayActivity.this, "Failed to save day: " + e.getMessage(), 
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onFailed(Exception e) {
-                Toast.makeText(AddDayActivity.this, "Failed to save day: " + e.getMessage(), 
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddDayActivity.this, 
+                    "Error checking for existing day: " + e.getMessage(), 
+                    Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // פונקציה שמטפלת בלחיצה על כפתור החזרה בסרגל העליון
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

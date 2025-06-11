@@ -130,11 +130,26 @@ public class DatabaseService {
     }
 
     public void updateUserField(@NotNull User user, @NotNull final DatabaseCallback<Void> callback) {
-        // Reference to the specific user's node
-        writeData("Users/" + user.getId()+"/fname", user.getFname(), callback);
-        writeData("Users/" + user.getId()+"/lname", user.getLname(), callback);
-        writeData("Users/" + user.getId()+"/phone", user.getPhone(), callback);
-        writeData("Users/" + user.getId()+"/dailycal", user.getDailycal(), callback);
+        // Create a map of all user fields to update
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("fname", user.getFname());
+        updates.put("lname", user.getLname());
+        updates.put("phone", user.getPhone());
+        updates.put("dailycal", user.getDailycal());
+        updates.put("weight", user.getWeight());
+        updates.put("height", user.getHeight());
+        updates.put("gender", user.getGender());
+        updates.put("age", user.getAge());
+
+        // Update all fields at once
+        databaseReference.child("Users").child(user.getId()).updateChildren(updates)
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    callback.onCompleted(null);
+                } else {
+                    callback.onFailed(task.getException());
+                }
+            });
     }
 
     private <T> void getData(@NotNull final String path, @NotNull final Class<T> clazz, @NotNull final DatabaseCallback<T> callback) {

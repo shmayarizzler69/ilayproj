@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="select_meal_type">Select Meal Type</string>
-    
+
     <!-- AddFood Activity -->
     <string name="enter_food_hint">Enter food</string>
     <string name="calories_hint">Calories</string>
@@ -13,4 +13,15 @@
     <string name="failed_update_day">Failed to update day</string>
     <string name="failed_create_day">Failed to create day</string>
     <string name="selected_meal_type">Selected meal type: %s</string>
+    <string-array name="activity_levels">
+        <item>לא פעיל (ללא פעילות גופנית)</item>
+        <item>מעט פעיל (1-3 פעמים בשבוע)</item>
+        <item>פעיל בינוני (3-5 פעמים בשבוע)</item>
+        <item>פעיל מאוד (6-7 פעמים בשבוע)</item>
+        <item>פעיל במיוחד (ספורטאי מקצועי)</item>
+    </string-array>
+
+    <!-- Navigation Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

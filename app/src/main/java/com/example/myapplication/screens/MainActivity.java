@@ -17,11 +17,13 @@ import com.example.myapplication.R;
 import com.example.myapplication.utils.NPH;
 import com.example.myapplication.utils.NotificationHelper;
 
+// מסך הפתיחה של האפליקציה - מאפשר להתחבר, להירשם או לקרוא על האפליקציה
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnRegister, btnLogin, btnAbout, btntest;
 
     private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את הכפתורים ומבקשת הרשאות התראות
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initNotificationPermission();
     }
 
+    // פונקציה שמאתחלת את כל הכפתורים במסך
     private void initViews() {
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAbout.setOnClickListener(this);
     }
 
+    // פונקציה שמבקשת הרשאות להצגת התראות מהמשתמש
     private void initNotificationPermission() {
         // Register the permission request launcher
         requestNotificationPermissionLauncher = registerForActivityResult(
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // פונקציה ששולחת התראת ברוכים הבאים
     private void Notification() {
         NotificationHelper.sendNotification(
                 this,
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
     }
 
+    // פונקציה שמטפלת בלחיצות על הכפתורים - מעבירה למסכים המתאימים
     @Override
     public void onClick(View v) {
         if (v == btnRegister) {

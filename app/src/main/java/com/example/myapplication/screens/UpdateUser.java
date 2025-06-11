@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +18,17 @@ import com.example.myapplication.utils.SharedPreferencesUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+// מסך עדכון פרטי משתמש - מאפשר למשתמש לעדכן את הפרטים האישיים שלו
 public class UpdateUser extends AppCompatActivity {
 
     private TextInputEditText etFirstName, etLastName, etPhone, etDailyCalories;
+    private TextInputEditText etWeight, etHeight, etAge;
+    private AutoCompleteTextView spinnerGender;
     private MaterialButton btnUpdate, btnReturn;
     private DatabaseService databaseService;
     private String userId;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את כל השדות עם הפרטים הנוכחיים
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +45,17 @@ public class UpdateUser extends AppCompatActivity {
         etLastName = findViewById(R.id.ETLName);
         etPhone = findViewById(R.id.etPhone);
         etDailyCalories = findViewById(R.id.etDC);
+        etWeight = findViewById(R.id.etWeight);
+        etHeight = findViewById(R.id.etHeight);
+        etAge = findViewById(R.id.etAge);
+        spinnerGender = findViewById(R.id.spinnerGender);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnReturn = findViewById(R.id.btnReturn);
+
+        // Set up gender dropdown
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, android.R.layout.simple_dropdown_item_1line);
+        spinnerGender.setAdapter(adapter);
 
         // Initialize database service and get current user ID
         databaseService = DatabaseService.getInstance();
@@ -60,6 +75,7 @@ public class UpdateUser extends AppCompatActivity {
         btnReturn.setOnClickListener(v -> finish());
     }
 
+    // פונקציה שמטפלת בלחיצה על כפתור החזרה בסרגל העליון
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -69,6 +85,7 @@ public class UpdateUser extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // פונקציה שטוענת את פרטי המשתמש הנוכחיים מהמסד נתונים
     private void loadUserDetails() {
         databaseService.getUser(userId, new DatabaseService.DatabaseCallback<User>() {
             @Override
@@ -78,6 +95,14 @@ public class UpdateUser extends AppCompatActivity {
                     etLastName.setText(user.getLname());
                     etPhone.setText(user.getPhone());
                     etDailyCalories.setText(user.getDailycal() != null ? String.valueOf(user.getDailycal()) : "");
+                    etWeight.setText(user.getWeight() != null ? String.valueOf(user.getWeight()) : "");
+                    etHeight.setText(user.getHeight() != null ? String.valueOf(user.getHeight()) : "");
+                    etAge.setText(user.getAge() != null ? String.valueOf(user.getAge()) : "");
+                    
+                    // Set gender selection
+                    if (user.getGender() != null) {
+                        spinnerGender.setText(user.getGender(), false);
+                    }
                 } else {
                     showError("לא ניתן לטעון את פרטי המשתמש");
                 }
@@ -90,15 +115,20 @@ public class UpdateUser extends AppCompatActivity {
         });
     }
 
+    // פונקציה שמעדכנת את פרטי המשתמש במסד הנתונים
     private void updateUser() {
         // Get input values
         String firstName = etFirstName.getText().toString().trim();
         String lastName = etLastName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String dailyCalInput = etDailyCalories.getText().toString().trim();
+        String weightInput = etWeight.getText().toString().trim();
+        String heightInput = etHeight.getText().toString().trim();
+        String ageInput = etAge.getText().toString().trim();
+        String gender = spinnerGender.getText().toString();
 
         // Validate inputs
-        if (!validateInputs(firstName, lastName, phone, dailyCalInput)) {
+        if (!validateInputs(firstName, lastName, phone, dailyCalInput, weightInput, heightInput, ageInput)) {
             return;
         }
 
@@ -109,6 +139,10 @@ public class UpdateUser extends AppCompatActivity {
         updatedUser.setLname(lastName);
         updatedUser.setPhone(phone);
         updatedUser.setDailycal(Integer.parseInt(dailyCalInput));
+        updatedUser.setWeight(Double.parseDouble(weightInput));
+        updatedUser.setHeight(Double.parseDouble(heightInput));
+        updatedUser.setAge(Integer.parseInt(ageInput));
+        updatedUser.setGender(gender);
 
         // Show loading state
         btnUpdate.setEnabled(false);
@@ -124,11 +158,17 @@ public class UpdateUser extends AppCompatActivity {
                 currentUser.setLname(lastName);
                 currentUser.setPhone(phone);
                 currentUser.setDailycal(Integer.parseInt(dailyCalInput));
+                currentUser.setWeight(Double.parseDouble(weightInput));
+                currentUser.setHeight(Double.parseDouble(heightInput));
+                currentUser.setAge(Integer.parseInt(ageInput));
+                currentUser.setGender(gender);
                 SharedPreferencesUtil.saveUser(UpdateUser.this, currentUser);
 
                 // Show success and finish
                 runOnUiThread(() -> {
                     Toast.makeText(UpdateUser.this, "הפרטים עודכנו בהצלחה", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(UpdateUser.this, AfterLoginMain.class);
+                    startActivity(intent);
                     finish();
                 });
             }
@@ -144,7 +184,9 @@ public class UpdateUser extends AppCompatActivity {
         });
     }
 
-    private boolean validateInputs(String firstName, String lastName, String phone, String dailyCalInput) {
+    // פונקציה שבודקת את תקינות כל השדות לפני העדכון
+    private boolean validateInputs(String firstName, String lastName, String phone, String dailyCalInput,
+                                 String weightInput, String heightInput, String ageInput) {
         if (firstName.length() < 2) {
             etFirstName.setError("שם פרטי קצר מדי");
             etFirstName.requestFocus();
@@ -182,9 +224,67 @@ public class UpdateUser extends AppCompatActivity {
             return false;
         }
 
+        // Validate weight
+        if (TextUtils.isEmpty(weightInput)) {
+            etWeight.setError("נדרש משקל");
+            etWeight.requestFocus();
+            return false;
+        }
+        try {
+            double weight = Double.parseDouble(weightInput);
+            if (weight < 30 || weight > 300) {
+                etWeight.setError("משקל חייב להיות בין 30 ל-300 ק\"ג");
+                etWeight.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            etWeight.setError("משקל חייב להיות מספר");
+            etWeight.requestFocus();
+            return false;
+        }
+
+        // Validate height
+        if (TextUtils.isEmpty(heightInput)) {
+            etHeight.setError("נדרש גובה");
+            etHeight.requestFocus();
+            return false;
+        }
+        try {
+            double height = Double.parseDouble(heightInput);
+            if (height < 100 || height > 250) {
+                etHeight.setError("גובה חייב להיות בין 100 ל-250 ס\"מ");
+                etHeight.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            etHeight.setError("גובה חייב להיות מספר");
+            etHeight.requestFocus();
+            return false;
+        }
+
+        // Validate age
+        if (TextUtils.isEmpty(ageInput)) {
+            etAge.setError("נדרש גיל");
+            etAge.requestFocus();
+            return false;
+        }
+        try {
+            int age = Integer.parseInt(ageInput);
+            if (age < 12 || age > 120) {
+                etAge.setError("גיל חייב להיות בין 12 ל-120");
+                etAge.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            etAge.setError("גיל חייב להיות מספר");
+            etAge.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
+    // פונקציה שמציגה הודעת שגיאה למשתמש
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
