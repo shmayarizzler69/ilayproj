@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+// מסך להוספת ארוחה חדשה - כאן אפשר להוסיף מאכלים והקלוריות שלהם
 public class AddFood extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "AddFood";
@@ -46,6 +47,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private String currentUserId;
     private Day existingDay;
 
+    // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את כל הכפתורים והשדות שנראה במסך
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +57,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         setupButtons();
         setupMealTypeSpinner();
         
-        // Add initial row
+        // מתחיל עם שורה
         addNewRowWithTwoEditTexts();
 
         // Get the existing day if passed from DayDetailActivity
@@ -65,6 +67,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    // פונקציה שמאתחלת את כל המשתנים הבסיסיים שנצטרך במסך
     private void initializeFields() {
         meal = new Meal();
         container = findViewById(R.id.container);
@@ -76,6 +79,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         currentUserId = authenticationService.getCurrentUserId();
     }
 
+    // פונקציה שמגדירה את כל הכפתורים במסך ומה יקרה כשלוחצים עליהם
     private void setupButtons() {
         btnBack.setOnClickListener(this);
         
@@ -89,6 +93,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         removeRowButton.setOnClickListener(v -> removeLastRow());
     }
 
+    // פונקציה שמגדירה את התפריט הנפתח לבחירת סוג הארוחה (ארוחת בוקר, צהריים וכו')
     private void setupMealTypeSpinner() {
         Spinner mealTypeSpinner = findViewById(R.id.mealTypeSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
@@ -112,6 +117,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
+    // פונקציה שמטפלת בשמירת הארוחה החדשה - בודקת שהכל תקין ושולחת למסד הנתונים
     private void handleSubmit() {
         String mealId = databaseService.generateMealId();
         meal.setMealId(mealId);
@@ -212,6 +218,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    // פונקציה שמוסיפה שורה חדשה למסך - שדה למאכל ושדה לקלוריות
     private void addNewRowWithTwoEditTexts() {
         LinearLayout newRow = createRowLayout();
         EditText foodNameEditText = createFoodNameEditText();
@@ -226,6 +233,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         container.addView(newRow);
     }
 
+    // פונקציה שיוצרת שורה חדשה עם שני שדות טקסט
     private LinearLayout createRowLayout() {
         LinearLayout newRow = new LinearLayout(this);
         newRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -239,6 +247,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         return newRow;
     }
 
+    // פונקציה שיוצרת שדה טקסט להזנת שם המאכל
     private EditText createFoodNameEditText() {
         EditText foodNameEditText = new EditText(this);
         foodNameEditText.setHint(R.string.enter_food_hint);
@@ -255,6 +264,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         return foodNameEditText;
     }
 
+    // פונקציה שיוצרת שדה טקסט להזנת הקלוריות
     private EditText createCaloriesEditText() {
         EditText caloriesEditText = new EditText(this);
         caloriesEditText.setHint(R.string.calories_hint);
@@ -303,6 +313,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         row.setPadding(paddingPx, paddingPx, paddingPx, paddingPx);
     }
 
+    // פונקציה שמוחקת את השורה האחרונה מהרשימה
     private void removeLastRow() {
         int rowCount = container.getChildCount();
         if (rowCount > 0) {
@@ -324,6 +335,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         return new Date();
     }
 
+    // פונקציה שמחשבת את סך כל הקלוריות מכל המאכלים שהוזנו
     private int calculateTotalCalories() {
         int totalCalories = 0;
 
