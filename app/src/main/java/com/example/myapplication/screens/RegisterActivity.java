@@ -25,6 +25,8 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.HashMap;
+
 // מסך הרשמה - מאפשר למשתמש חדש להירשם למערכת עם כל הפרטים האישיים שלו
 public class RegisterActivity extends AppCompatActivity {
 
@@ -331,7 +333,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCompleted(String uid) {
                 Log.d(TAG, "User registration successful with UID: " + uid);
                 
-                User newUser = new User(uid, firstName, lastName, phone, email, password, dailyCal, gender, height, weight, age);
+                User newUser = new User(uid, firstName, lastName, phone, email, password,
+                        dailyCal, gender, height, weight, age, false, new HashMap<>());
                 saveUserToDatabase(newUser);
             }
 

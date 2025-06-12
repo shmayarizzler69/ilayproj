@@ -35,11 +35,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DatabaseService databaseService;
     private User user = null;
 
-    // פרטי מנהל
-    private final String ADMIN_EMAIL = "admin@gmail.com";
-    private final String ADMIN_PASSWORD = "admin123";
-
-    public static boolean isAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,17 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if (!checkInput(email, password)) return;
 
-            if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
-                // כניסת מנהל
-                isAdmin = true;
-                Log.d(TAG, "onClick: Admin logged in");
-                Intent adminIntent = new Intent(LoginActivity.this, AdminPage.class);
-                startActivity(adminIntent);
-            } else {
-                // כניסת משתמש
-                Log.d(TAG, "onClick: Logging in user...");
-                loginUser(email, password);
-            }
+            loginUser(email, password);
         }
     }
 
@@ -149,6 +134,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onCompleted(User user) {
                         Log.d(TAG, "onCompleted: User data retrieved successfully");
+                        SharedPreferencesUtil.saveUser(LoginActivity.this, user);
+                        if (user.isAdmin()) {
+                            Log.d(TAG, "onClick: Admin logged in");
+                            Intent adminIntent = new Intent(LoginActivity.this, AdminPage.class);
+                            startActivity(adminIntent);
+                            return;
+                        }
                         handleLoginSuccess(user);
                     }
 

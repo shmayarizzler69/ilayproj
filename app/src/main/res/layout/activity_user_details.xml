@@ -36,10 +36,30 @@
         android:hint="Email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
     <EditText
         android:id="@+id/userDailycalEditText"
         android:hint="Daily Calories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/userheightedittext"
+        android:hint="Height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/userweightEditText"
+        android:hint="Weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/userageEditText"
+        android:hint="Age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/userGenderEditText"
+        android:hint="Gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -54,11 +74,12 @@
         android:text="Delete User"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/backToDeleteUserActivityButton"
-        android:text="Back to Users"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|bottom"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:text="Back to Users" />
 </LinearLayout>

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-// מסך להוספת ארוחה חדשה - כאן אפשר להוסיף מאכלים והקלוריות שלהם
 public class AddFood extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "AddFood";

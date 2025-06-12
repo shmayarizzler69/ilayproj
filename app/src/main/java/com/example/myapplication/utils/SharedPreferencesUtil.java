@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.example.myapplication.models.User;
 
+import java.util.HashMap;
+
 /// Utility class for shared preferences operations
 /// Contains methods for saving and retrieving data from shared preferences
 /// Also contains methods for clearing and removing data from shared preferences
@@ -114,6 +116,7 @@ public class SharedPreferencesUtil {
         editor.putFloat("height", user.getHeight().floatValue());
         editor.putFloat("weight", user.getWeight().floatValue());
         editor.putInt("age", user.getAge());
+        editor.putBoolean("isAdmin", user.isAdmin());
 
         editor.apply();
     }
@@ -140,8 +143,10 @@ public class SharedPreferencesUtil {
         Double height = (double) sharedPreferences.getFloat("height", 0f);
         Double weight = (double) sharedPreferences.getFloat("weight", 0f);
         Integer age = sharedPreferences.getInt("age", 0);
-
-        return new User(uid, fName, lName, phone, email, password, dailycal, gender, height, weight, age);
+        boolean isAdmin = sharedPreferences.getBoolean("isAdmin", false);
+        // ??????????
+        return new User(uid, fName, lName, phone, email, password, dailycal, gender, height,
+                weight, age, isAdmin, new HashMap<>());
     }
 
     /// Sign out the user by removing user data from shared preferences

@@ -1,6 +1,7 @@
 package com.example.myapplication.models;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class User implements Serializable {
     String id, fname, lname, phone, email, password;
@@ -10,10 +11,15 @@ public class User implements Serializable {
     Double weight;
     Integer age;
 
+    boolean isAdmin;
+
+    Map<String, Day> days;
+
     public User() {
     }
 
-    public User(String id, String fname, String lname, String phone, String email, String password, Integer dailycal, String gender, Double height, Double weight, Integer age) {
+    public User(String id, String fname, String lname, String phone, String email, String password,
+                Integer dailycal, String gender, Double height, Double weight, Integer age, boolean isAdmin, Map<String, Day> days) {
         this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -25,6 +31,8 @@ public class User implements Serializable {
         this.height = height;
         this.weight = weight;
         this.age = age;
+        this.isAdmin = isAdmin;
+        this.days = days;
     }
 
     public User(User user) {
@@ -39,6 +47,8 @@ public class User implements Serializable {
         this.height = user.height;
         this.weight = user.weight;
         this.age = user.age;
+        this.isAdmin = user.isAdmin;
+        this.days = user.days;
     }
 
     public String getId() {
@@ -129,6 +139,22 @@ public class User implements Serializable {
         this.age = age;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public Map<String, Day> getDays() {
+        return days;
+    }
+
+    public void setDays(Map<String, Day> days) {
+        this.days = days;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -138,11 +164,12 @@ public class User implements Serializable {
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", dailycal='" + dailycal + '\'' +
+                ", dailycal=" + dailycal +
                 ", gender='" + gender + '\'' +
-                ", height='" + height + '\'' +
-                ", weight='" + weight + '\'' +
-                ", age='" + age + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", age=" + age +
+                ", isAdmin=" + isAdmin +
                 '}';
     }
 }

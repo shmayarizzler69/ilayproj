@@ -18,7 +18,7 @@ import com.example.myapplication.services.DatabaseService.DatabaseCallback;
 public class UserDetailsActivity extends AppCompatActivity {
 
     private TextView userIdTextView;
-    private EditText userFnameEditText, userLnameEditText, userPhoneEditText, userEmailEditText, userDailycalEditText;
+    private EditText userFnameEditText, userLnameEditText, userPhoneEditText, userEmailEditText, userDailycalEditText, userheightedittext,userweightEditText,userageEditText,userGenderEditText;
     private Button saveChangesButton, deleteUserButton, backToDeleteUserActivityButton;
 
     private DatabaseService databaseService;
@@ -35,6 +35,12 @@ public class UserDetailsActivity extends AppCompatActivity {
         userPhoneEditText = findViewById(R.id.userPhoneEditText);
         userEmailEditText = findViewById(R.id.userEmailEditText);
         userDailycalEditText = findViewById(R.id.userDailycalEditText);
+        //
+        userheightedittext = findViewById(R.id.userheightedittext);
+        userweightEditText= findViewById(R.id.userweightEditText);
+        userageEditText = findViewById(R.id.userageEditText);
+        userGenderEditText = findViewById(R.id.userGenderEditText);
+        //
         saveChangesButton = findViewById(R.id.saveChangesButton);
         deleteUserButton = findViewById(R.id.deleteUserButton);
         backToDeleteUserActivityButton = findViewById(R.id.backToDeleteUserActivityButton);
@@ -54,7 +60,10 @@ public class UserDetailsActivity extends AppCompatActivity {
             userPhoneEditText.setText(user.getPhone());
             userEmailEditText.setText(user.getEmail());
             userDailycalEditText.setText(String.valueOf(user.getDailycal()));
-
+            userheightedittext.setText(String.valueOf(user.getHeight()));
+            userweightEditText.setText(String.valueOf(user.getWeight()));
+            userageEditText.setText(user.getAge()+"");
+            userGenderEditText.setText(String.valueOf(user.getAge()));
             // פונקציה שמעדכנת את פרטי המשתמש במסד הנתונים
             saveChangesButton.setOnClickListener(v -> {
                 String updatedFname = userFnameEditText.getText().toString();
@@ -62,8 +71,13 @@ public class UserDetailsActivity extends AppCompatActivity {
                 String updatedPhone = userPhoneEditText.getText().toString();
                 String updatedEmail = userEmailEditText.getText().toString();
                 String updatedDailycalString = userDailycalEditText.getText().toString();
+                String updatedHeight= userheightedittext.getText().toString();
+                String updatedWeight= userweightEditText.getText().toString();
+                String updatedAge = userageEditText.getText().toString();
+                String updatedGender =userGenderEditText.getText().toString();
 
-                if (updatedFname.isEmpty() || updatedLname.isEmpty() || updatedPhone.isEmpty() || updatedEmail.isEmpty() || updatedDailycalString.isEmpty()) {
+
+                if (updatedFname.isEmpty() || updatedLname.isEmpty() || updatedPhone.isEmpty() || updatedEmail.isEmpty()||updatedHeight.isEmpty() || updatedWeight.isEmpty()|| updatedAge.isEmpty()|| updatedGender.isEmpty() || updatedDailycalString.isEmpty()) {
                     Toast.makeText(UserDetailsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -77,6 +91,10 @@ public class UserDetailsActivity extends AppCompatActivity {
                     user.setPhone(updatedPhone);
                     user.setEmail(updatedEmail);
                     user.setDailycal(updatedDailycal);
+                    user.setHeight(Double.parseDouble(updatedHeight));
+                    user.setWeight(Double.parseDouble(updatedWeight));
+                    user.setAge(Integer.parseInt(updatedAge));
+                    user.setGender(updatedGender);
 
                     // Update user data using DatabaseService
                     databaseService.updateUser(user, new DatabaseCallback<Void>() {

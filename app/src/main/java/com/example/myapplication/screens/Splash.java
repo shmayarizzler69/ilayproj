@@ -37,14 +37,13 @@ public class Splash extends AppCompatActivity {
         authenticationService = AuthenticationService.getInstance();
 
         // פונקציה שמריצה את הבדיקה ברקע ומעבירה למסך המתאים
+        //בשביל לראות את העמוד של הספלאש צריך להשתמש בthread כדי בו זמנית לחכות 3 שניות sleep, ואז לעבור לעמוד
         Thread splashThread = new Thread(() -> {
             try {
                 Thread.sleep(SPLASH_DISPLAY_TIME); // SPLASH_DISPLAY_TIME delay
             } catch (InterruptedException ignored) {
             } finally {
-                // go to the correct activity after the delay
                 Intent intent;
-                /// Check if user is signed in or not and redirect to LandingActivity if not signed in
                 if (authenticationService.isUserSignedIn()) {
                     Log.d(TAG, "User signed in, redirecting to AfterLoginMain ");
                     intent = new Intent(Splash.this, AfterLoginMain.class);

@@ -31,17 +31,14 @@ public class AdminPage extends AppCompatActivity implements View.OnClickListener
         initViews();
     }
 
-    // פונקציה שמאתחלת את כל הכפתורים במסך ומגדירה מה יקרה בלחיצה עליהם
     private void initViews() {
         btntest= findViewById(R.id.btnGotest);
         btntest.setOnClickListener(this);
-        btninfo=findViewById(R.id.btninfo);
-        btninfo.setOnClickListener(this);
+
         btnAbout = findViewById(R.id.btnGoAbout);
         btnAbout.setOnClickListener(this);
     }
 
-    // פונקציה שמטפלת בלחיצות על הכפתורים - מעבירה למסכים המתאימים
     @Override
     public void onClick(View v) {
         if (v==btntest){
@@ -52,9 +49,6 @@ public class AdminPage extends AppCompatActivity implements View.OnClickListener
             Intent golog=new Intent(getApplicationContext(), DaysListActivity.class);
             startActivity(golog);
         }
-        if (v==btninfo){
-            Intent goinfo=new Intent(getApplicationContext(), UpdateUser.class);
-            startActivity(goinfo);
-        }
+
     }
 }
