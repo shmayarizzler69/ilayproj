@@ -20,6 +20,7 @@ import com.example.myapplication.Adapters.DaysAdapter;
 import com.example.myapplication.models.Day;
 import com.example.myapplication.services.AuthenticationService;
 import com.example.myapplication.services.DatabaseService;
+import com.example.myapplication.utils.SharedPreferencesUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -58,7 +59,7 @@ public class DaysListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dayList = new ArrayList<>();
         filteredDayList = new ArrayList<>();
-        adapter = new DaysAdapter(filteredDayList, this::onDayClicked);
+        adapter = new DaysAdapter(filteredDayList, this::onDayClicked, SharedPreferencesUtil.getUser(this));
         recyclerView.setAdapter(adapter);
 
         // Initialize services

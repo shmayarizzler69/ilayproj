@@ -153,16 +153,7 @@ public class UpdateUser extends AppCompatActivity {
             @Override
             public void onCompleted(Void object) {
                 // Update shared preferences
-                User currentUser = SharedPreferencesUtil.getUser(UpdateUser.this);
-                currentUser.setFname(firstName);
-                currentUser.setLname(lastName);
-                currentUser.setPhone(phone);
-                currentUser.setDailycal(Integer.parseInt(dailyCalInput));
-                currentUser.setWeight(Double.parseDouble(weightInput));
-                currentUser.setHeight(Double.parseDouble(heightInput));
-                currentUser.setAge(Integer.parseInt(ageInput));
-                currentUser.setGender(gender);
-                SharedPreferencesUtil.saveUser(UpdateUser.this, currentUser);
+                SharedPreferencesUtil.saveUser(UpdateUser.this, updatedUser);
 
                 // Show success and finish
                 runOnUiThread(() -> {

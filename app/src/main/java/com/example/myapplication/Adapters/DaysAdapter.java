@@ -6,15 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Day;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.DatabaseService;
-import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,12 +30,14 @@ public class DaysAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Object> items; // רשימה שמכילה או כותרות (מחרוזות) או ימים
     private final OnDayClickListener listener;
+    User user;
 
     // בנאי - מקבל רשימת ימים ופונקציה שתטפל בלחיצות על ימים
-    public DaysAdapter(List<Day> days, OnDayClickListener listener) {
+    public DaysAdapter(List<Day> days, OnDayClickListener listener, User user) {
         this.listener = listener;
         this.items = new ArrayList<>();
         organizeByWeeks(days);
+        this.user = user;
     } //
 
     // פונקציה שמארגנת את הימים לפי שבועות ומוסיפה כותרות מתאימות
@@ -157,32 +156,17 @@ public class DaysAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvCalories.setText(String.format(Locale.getDefault(), "%d cal", day.getSumcal()));
 
             // Get user's daily calorie goal and update the indicator
-            String userId = databaseService.getCurrentUserId();
-            if (userId != null) {
-                databaseService.getUser(userId, new DatabaseService.DatabaseCallback<User>() {
-                    @Override
-                    public void onCompleted(User user) {
-                        int dailyGoal = user.getDailycal();
-                        int sumCal = day.getSumcal();
+            int dailyGoal = user.getDailycal();
+            int sumCal = day.getSumcal();
 
-                        if (sumCal > dailyGoal) {
-                            itemView.setBackgroundColor(Color.parseColor("#1AFF0000")); // Light red with alpha
-                            tvGoalIndicator.setText("✗");
-                            tvGoalIndicator.setTextColor(Color.RED);
-                        } else if (sumCal == dailyGoal) {
-                            itemView.setBackgroundColor(Color.parseColor("#1A00FF00")); // Light green with alpha
-                            tvGoalIndicator.setText("✓");
-                            tvGoalIndicator.setTextColor(Color.GREEN);
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(Exception e) {
-                        // Handle error
-                        tvGoalIndicator.setText("");
-                        itemView.setBackgroundColor(Color.TRANSPARENT);
-                    }
-                });
+            if (sumCal > dailyGoal) {
+                itemView.setBackgroundColor(Color.parseColor("#1AFF0000")); // Light red with alpha
+                tvGoalIndicator.setText("✗");
+                tvGoalIndicator.setTextColor(Color.RED);
+            } else if (sumCal < dailyGoal) {
+                itemView.setBackgroundColor(Color.parseColor("#1A00FF00")); // Light green with alpha
+                tvGoalIndicator.setText("✓");
+                tvGoalIndicator.setTextColor(Color.GREEN);
             }
         }
     }
