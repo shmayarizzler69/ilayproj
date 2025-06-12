@@ -15,7 +15,6 @@ import com.example.myapplication.models.Day;
 import com.example.myapplication.models.User;
 import com.example.myapplication.services.DatabaseService;
 import com.google.firebase.database.collection.LLRBNode;
-import com.example.myapplication.utils.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -170,18 +169,10 @@ public class DaysAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             itemView.setBackgroundColor(Color.parseColor("#1AFF0000")); // Light red with alpha
                             tvGoalIndicator.setText("✗");
                             tvGoalIndicator.setTextColor(Color.RED);
-                            // Send notification for exceeding the goal
-                            String title = "Calorie Alert";
-                            String message = "You've consumed " + sumCal + " calories today, which is over your daily goal of " + dailyGoal + " calories.";
-                            NotificationHelper.sendNotification(itemView.getContext(), title, message);
-                        } else {
+                        } else if (sumCal == dailyGoal) {
                             itemView.setBackgroundColor(Color.parseColor("#1A00FF00")); // Light green with alpha
                             tvGoalIndicator.setText("✓");
                             tvGoalIndicator.setTextColor(Color.GREEN);
-                            // Send congratulatory notification
-                            String title = "Goal Achieved!";
-                            String message = "Great job! You're within your daily calorie goal of " + dailyGoal + " calories!";
-                            NotificationHelper.sendNotification(itemView.getContext(), title, message);
                         }
                     }
 

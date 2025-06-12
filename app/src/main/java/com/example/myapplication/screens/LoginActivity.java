@@ -5,11 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
-import androidx.core.app.NotificationCompat;
-import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +26,6 @@ import com.google.android.material.textfield.TextInputLayout;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
-    private static final String CHANNEL_ID = "welcome_channel";
-    private static final int NOTIFICATION_ID = 1;
 
     private TextInputLayout tilEmail, tilPassword;
     private TextInputEditText etEmail, etPassword;
@@ -155,14 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onCompleted(User user) {
                         Log.d(TAG, "onCompleted: User data retrieved successfully");
-                        SharedPreferencesUtil.saveUser(LoginActivity.this, user);
-
-                        // Show welcome notification
-                        showWelcomeNotification(user.getFname(), user.getLname());
-
-                        Intent mainIntent = new Intent(LoginActivity.this, AfterLoginMain.class);
-                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(mainIntent);
+                        handleLoginSuccess(user);
                     }
 
                     @Override
@@ -184,17 +171,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    private void handleLoginSuccess(User user) {
+        // Save user data
+        SharedPreferencesUtil.saveUser(LoginActivity.this, user);
 
-
-    private void showWelcomeNotification(String firstName, String lastName) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("ברוך שובך!")
-                .setContentText("שלום " + firstName)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        // Start MainActivity
+        Intent intent = new Intent(LoginActivity.this, AfterLoginMain.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

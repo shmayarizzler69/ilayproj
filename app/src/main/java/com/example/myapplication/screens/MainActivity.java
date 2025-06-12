@@ -14,14 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.R;
-import com.example.myapplication.utils.NPH;
-import com.example.myapplication.utils.NotificationHelper;
 
 // מסך הפתיחה של האפליקציה - מאפשר להתחבר, להירשם או לקרוא על האפליקציה
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnRegister, btnLogin, btnAbout, btntest;
-
-    private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
 
     // פונקציה שמופעלת כשהמסך נפתח בפעם הראשונה - מכינה את הכפתורים ומבקשת הרשאות התראות
     @Override
@@ -36,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         initViews();
-        initNotificationPermission();
     }
 
     // פונקציה שמאתחלת את כל הכפתורים במסך
@@ -48,35 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnLogin.setOnClickListener(this);
         btnAbout = findViewById(R.id.btnAbout);
         btnAbout.setOnClickListener(this);
-    }
-
-    // פונקציה שמבקשת הרשאות להצגת התראות מהמשתמש
-    private void initNotificationPermission() {
-        // Register the permission request launcher
-        requestNotificationPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    if (isGranted) {
-                        Notification();
-                    }
-                    // Handle cases where the user denies the permission if necessary
-                });
-
-        // Check and request notification permission if needed
-        if (NPH.hasNP(this)) {
-            Notification();
-        } else {
-            NPH.requestNP(requestNotificationPermissionLauncher);
-        }
-    }
-
-    // פונקציה ששולחת התראת ברוכים הבאים
-    private void Notification() {
-        NotificationHelper.sendNotification(
-                this,
-                "יואו",
-                "ברוך הבא לאפליקציה!"
-        );
     }
 
     // פונקציה שמטפלת בלחיצות על הכפתורים - מעבירה למסכים המתאימים
